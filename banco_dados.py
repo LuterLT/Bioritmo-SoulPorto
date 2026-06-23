@@ -5,7 +5,8 @@ def abrir_conexao():
         host="localhost",
         user="root",
         password="soul_code",
-        database="bioritmo"
+        database="bioritmo",
+        use_pure = True
     )
     return conexao
 
@@ -15,11 +16,11 @@ def iniciar_db():
         cursor = conexao.cursor()
 
         #prodservi = Tabela de Produtos e Serviços
+        #START TRANSACTION;
         cursor.execute("""
-            START TRANSACTION;
             CREATE TABLE IF NOT EXISTS prodserv(
                 id INT PRIMARY KEY AUTO_INCREMENT,
-                nome VARCHAR(255) NOT NULL
+                nome VARCHAR(255) NOT NULL,
                 categoria VARCHAR(255) NOT NULL,
                 preco DECIMAL(10,2) NOT NULL,
                 qtde INT NOT NULL,
@@ -27,8 +28,8 @@ def iniciar_db():
             )
         """)
         #tabela que contém os planos
+        #START TRANSACTION;
         cursor.execute("""
-            START TRANSACTION;
             CREATE TABLE IF NOT EXISTS planos(
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NOT NULL,
@@ -39,8 +40,8 @@ def iniciar_db():
         """)
         #tabela que contém os alunos
         #atributo aulas_disp = quantidade de aulas disponíveis para o aluno realizar
+        #START TRANSACTION;
         cursor.execute("""
-            START TRANSACTION;
             CREATE TABLE IF NOT EXISTS aluno(
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NOT NULL,
@@ -52,8 +53,8 @@ def iniciar_db():
             )
         """)
         #histórico de vendas
+        #START TRANSACTION;
         cursor.execute("""
-            START TRANSACTION;
             CREATE TABLE IF NOT EXISTS vendas(
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 id_prodserv INT NOT NULL,
@@ -64,10 +65,10 @@ def iniciar_db():
             )
         """)
         #Tabela de Checkin do Usuário Dentro da Academia
+        #START TRANSACTION;
         cursor.execute("""
-            START TRANSACTION;
             CREATE TABLE IF NOT EXISTS checkin(
-                id INT PRIMARY KEY AUTOR_INCREMENT,
+                id INT PRIMARY KEY AUTO_INCREMENT,
                 id_aluno INT NOT NULL,
                 horario DATETIME NOT NULL,
                 FOREIGN KEY (id_aluno) REFERENCES aluno (id)
@@ -83,8 +84,9 @@ def iniciar_db():
                 ("Barrinha de Cereal", "Alimentos", 15.75, 40),
                 ("Lacinho para Cabelo", "Itens Aula", 3.50, 30)
             ]
+
+            #START TRANSACTION;
             cursor.executemany("""
-                START TRANSACTION;
                 INSERT INTO prodserv (nome, categoria, preco, qtde)
                 VALUES (%s, %s, %s, %s)
             """, prodserv_iniciais)
@@ -98,8 +100,8 @@ def iniciar_db():
                 ("Ouro", 99.99, 15),
                 ("Diamante", 129.99, 20)
             ]
+            #START TRANSACTION;
             cursor.executemany("""
-                START TRANSACTION;
                 INSERT INTO planos (nome, preco, qtde_aulas)
                 VALUES (%s, %s, %s)
             """, planos_iniciais)
@@ -108,11 +110,9 @@ def iniciar_db():
 
     except mysql.connector.Error as erro:
         conexao.rollback()
-        print(f"ERRO FATAL DE CONEXÃO COM O BANCO: {erro}")
+        print(f"ERRO FATAL DE CONEXÃO COM O BANCO (banco_dados): {erro}")
 
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
-
-
