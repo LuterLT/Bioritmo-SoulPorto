@@ -5,8 +5,7 @@ def abrir_conexao():
         host="localhost",
         user="root",
         password="soul_code",
-        database="bioritmo",
-        use_pure = True
+        database="bioritmo"
     )
     return conexao
 
@@ -16,7 +15,6 @@ def iniciar_db():
         cursor = conexao.cursor()
 
         #prodservi = Tabela de Produtos e Serviços
-        #START TRANSACTION;
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS prodserv(
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -28,7 +26,6 @@ def iniciar_db():
             )
         """)
         #tabela que contém os planos
-        #START TRANSACTION;
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS planos(
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -40,12 +37,13 @@ def iniciar_db():
         """)
         #tabela que contém os alunos
         #atributo aulas_disp = quantidade de aulas disponíveis para o aluno realizar
-        #START TRANSACTION;
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS aluno(
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NOT NULL,
                 email VARCHAR(255) UNIQUE NOT NULL,
+                peso DECIMAL(10, 2),
+                altura DECIMAL(10, 2),
                 aulas_disp INT NOT NULL,
                 ativo INT DEFAULT 1,
                 id_plano INT NOT NULL,
@@ -53,7 +51,6 @@ def iniciar_db():
             )
         """)
         #histórico de vendas
-        #START TRANSACTION;
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS vendas(
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -65,7 +62,6 @@ def iniciar_db():
             )
         """)
         #Tabela de Checkin do Usuário Dentro da Academia
-        #START TRANSACTION;
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS checkin(
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -85,7 +81,6 @@ def iniciar_db():
                 ("Lacinho para Cabelo", "Itens Aula", 3.50, 30)
             ]
 
-            #START TRANSACTION;
             cursor.executemany("""
                 INSERT INTO prodserv (nome, categoria, preco, qtde)
                 VALUES (%s, %s, %s, %s)
@@ -95,16 +90,32 @@ def iniciar_db():
         cursor.execute("SELECT COUNT(*) FROM planos")
         if cursor.fetchone()[0] == 0:
             planos_iniciais = [
+                ("Experimental", 0, 1),
                 ("Bronze", 49.99, 5),
                 ("Prata", 74.99, 10),
                 ("Ouro", 99.99, 15),
                 ("Diamante", 129.99, 20)
             ]
-            #START TRANSACTION;
             cursor.executemany("""
                 INSERT INTO planos (nome, preco, qtde_aulas)
                 VALUES (%s, %s, %s)
             """, planos_iniciais)
+        conexao.commit()
+
+        cursor.execute("SELECT COUNT(*) FROM aluno")
+        if cursor.fetchone()[0] == 0: #verificar se não tem nem UMA linha na tabela aluno
+            alunos_iniciais = [
+                ("Davi Hiluany", "davi.hiluany@gmail.com", 65.00, 1.65, 1, 1),
+                ("Gabriella Iglesias", "gabriella.iglesias@gmail.com", 65.00, 1.65, 1, 1),
+                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 65.00, 1.85, 1, 1),
+                ("João Pedro de França", "joao.defranca@gmail.com", 65.00, 1.65, 1, 1),
+                ("Lucas Imparato", "lucas.imparato@gmail.com", 65.00, 1.65, 1, 1),
+            ]
+
+            cursor.executemany("""
+                INSERT INTO aluno (nome, email, peso, altura, aulas_disp, id_plano)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, alunos_iniciais)
         conexao.commit()
 
 
