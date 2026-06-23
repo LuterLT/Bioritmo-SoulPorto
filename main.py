@@ -4,8 +4,6 @@ from banco_dados import iniciar_db, abrir_conexao
 from interface import exibir_menu
 
 
-
-
 #iniciar o programa
 iniciar_db()
 
@@ -14,12 +12,12 @@ while True:
         conexao = abrir_conexao()
         cursor = conexao.cursor()
 
-        cursor.execute("SELECT SUM(valor) FROM vendas")
+        cursor.execute("SELECT SUM(subtotal) FROM vendas")
         result_caixa = cursor.fetchone()[0]
         caixa = result_caixa if result_caixa is not None else 0.0
 
     except mysql.connector.Error as erro:
-        print(f"ERRO FATAL DE CONEXÃO COM O BANCO: {erro}")
+        print(f"ERRO FATAL DE CONEXÃO COM O BANCO (main): {erro}")
 
     finally:
         if 'conexao' in locals() and conexao.is_connected():

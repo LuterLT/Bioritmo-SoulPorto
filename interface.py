@@ -3,14 +3,14 @@ from banco_dados import abrir_conexao
 
 def exibir_menu():  #=============================================EXIBIR MENU===========
     print("=========== BIO RITMO SoulPorto ===========\n",
-          "1 - Check In", #registrar o check-in de um aluno específico
-          "2 - Cadastros/Alterações Cadastrais", #cadastro e atualização de alunos e/ou produtos
-          "3 - Vendas", #registrar vendas de produtos/serviços
-          "4 - Repor Estoque", #repor estoque de produtos (unitário e lote)
-          "5 - Consulta", #busca alunos, planos e produtos/serviços
-          "6 - Controle Financeiro", #altera preço de planos/produtos, aplica promoções, exibe NF, painel BI
-          "7 - Exportar Relatórios", #exporta os relatórios de check-in e de vendas
-          "0 - Fechar o Sistema"
+          "1 - Check In\n", #registrar o check-in de um aluno específico
+          "2 - Cadastros/Alterações Cadastrais\n", #cadastro e atualização de alunos e/ou produtos
+          "3 - Vendas\n", #registrar vendas de produtos/serviços
+          "4 - Repor Estoque\n", #repor estoque de produtos (unitário e lote)
+          "5 - Consulta\n", #busca alunos, planos e produtos/serviços
+          "6 - Controle Financeiro\n", #altera preço de planos/produtos, aplica promoções, exibe NF, painel BI
+          "7 - Exportar Relatórios\n", #exporta os relatórios de check-in e de vendas
+          "0 - Fechar o Sistema\n"
           )
 
 
