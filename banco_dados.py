@@ -78,7 +78,7 @@ def iniciar_db():
                 ("Aula Avulsa", "Serviços", 50, 1),
                 ("Água Proteica", "Bebidas", 12.99, 50),
                 ("Barrinha de Cereal", "Alimentos", 15.75, 40),
-                ("Lacinho para Cabelo", "Itens Aula", 3.50, 30)
+                ("Lacinho para Cabelo", "Equipamentos", 3.50, 30)
             ]
 
             cursor.executemany("""
@@ -92,9 +92,9 @@ def iniciar_db():
             planos_iniciais = [
                 ("Experimental", 0, 1),
                 ("Bronze", 49.99, 5),
-                ("Prata", 74.99, 10),
+                ("Prata", 84.99, 10),
                 ("Ouro", 99.99, 15),
-                ("Diamante", 129.99, 20)
+                ("Diamante", 114.99, 20)
             ]
             cursor.executemany("""
                 INSERT INTO planos (nome, preco, qtde_aulas)

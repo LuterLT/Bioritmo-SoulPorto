@@ -39,7 +39,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
                 continuar = exibir_submenu("Alterando Cadastro dos Alunos")
                 continue
             
-            print(f"\nVocê Selecionou o aluno:\nnome: '{resultado[1]}'\nemail: {resultado[2]} \npeso: {resultado[3]:.2f} \naltura: {resultado[4]:2f}")
+            print(f"\nVocê Selecionou o aluno:\n-Nome: '{resultado[1]}'\n-Email: {resultado[2]} \n-Peso: {resultado[3]:.2f} \n-Altura: {resultado[4]:2f}")
             
             #pedir para o usuário digitar os campos
             print("\nPreencha os campos abaixo e APENAS aperte ENTER para aqueles que não deseja alterar")
@@ -52,13 +52,13 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
                 novo_nome= input("\nDigite o seu nome completo: ").strip() or resultado[1]
                 novo_email= input("Digite o seu email: ").strip() or resultado[2]
                 novo_peso_str= input("Digite o seu peso: ").strip()
-                nova_altura_str= input("Digite a sua altura: ").strip()
-                try:
+                try: #------------------------------------------------->alterar esses trys
                     novo_peso = float(novo_peso_str) if novo_peso_str else resultado[3]
                 except ValueError:
                     print("\nERRO: O Peso Deve ter um número, alteração cancelada")
                     continuar = exibir_submenu("Tentando Alterar Cadastro dos Alunos")
                     continue
+                nova_altura_str= input("Digite a sua altura: ").strip()
                 try:
                     nova_altura = float(nova_altura_str) if nova_altura_str else resultado[3]
                 except ValueError:
@@ -129,11 +129,11 @@ def alt_cad_produtos():
 
             print(f"""
 Você Selecionou o Produto:
-ID: {produto[0]}
-Nome: {produto[1]}
-Quantidade: {produto[2]}
-Categoria: {produto[3]}
-Preço: R$ {produto[4]:.2f}
+-ID: {produto[0]}
+-Nome: {produto[1]}
+-Quantidade: {produto[4]}
+-Categoria: {produto[2]}
+-Preço: R$ {produto[3]:.2f}
 """)
 
             print("\nPreencha os campos abaixo e APENAS aperte ENTER para não alterar")
@@ -148,17 +148,20 @@ Preço: R$ {produto[4]:.2f}
                 nova_categoria = input("Digite a nova categoria: ").strip() or produto[3]
                 # Quantidade e Preço
                 nova_qtde_str = input("Digite a nova quantidade: ").strip()
-                novo_preco_str = input("Digite o novo preço: ").strip()
                 try:
-                    nova_qtde = int(nova_qtde_str) if nova_qtde_str else produto[2]
-                    novo_preco = float(novo_preco_str) if novo_preco_str else produto[2]
+                    nova_qtde = int(nova_qtde_str) if nova_qtde_str else produto[4]
                 except ValueError:
                     print("\nERRO: Não foi possível atribuir um Valor Inteiro a Quantidade")
-                    continuar = 0
-                    continue
                 if nova_qtde < 0:
                     print("ERRO: A quantidade não pode ser negativa!")
                     input("Aperte ENTER para continuar")
+                    continuar = 0
+                    continue
+                novo_preco_str = input("Digite o novo preço: ").strip()
+                try:
+                    novo_preco = float(novo_preco_str) if novo_preco_str else produto[3]
+                except ValueError:
+                    print("\nERRO: Não foi possível atribuir um Valor Inteiro a Quantidade")
                     continuar = 0
                     continue
                 if novo_preco < 0:
@@ -166,7 +169,6 @@ Preço: R$ {produto[4]:.2f}
                     input("Aperte ENTER para continuar")
                     continuar = 0
                     continue
-
                 break
 
             # UPDATE
@@ -189,9 +191,6 @@ Preço: R$ {produto[4]:.2f}
 
             print("\nProduto alterado com sucesso!")
 
-            continuar = exibir_submenu(
-                "Alterando Cadastro de Produtos"
-            )
 
         except mysql.connector.Error as erro:
             print("arquivo cadastro - linha 216")
@@ -202,6 +201,7 @@ Preço: R$ {produto[4]:.2f}
             if 'conexao' in locals() and conexao.is_connected():
                 cursor.close()
                 conexao.close()
+        continuar = exibir_submenu("Alterando Cadastro de Produtos")
 
 def alt_cad_plano(): #============================== ALTERA CADASTRO DE PLANOS ===========================
     ''' 
@@ -335,7 +335,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
         if continuar == 2:
             break
         elif continuar == 0:
-            continuar = exibir_submenu("Cadastrando Novo Aluno")
+            continuar = exibir_submenu("Cadastrando Novos Alunos")
         
         novo_nome = input("\nDigite o nome do novo aluno: ").strip()
         novo_email = input("Digite o e-mail do novo aluno: ").strip()
@@ -350,7 +350,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
             novo_plano = int(input("\nQual plano deseja contratar? "))
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
-            continuar = exibir_submenu("Cadastrando Novo Aluno")
+            continuar = exibir_submenu("Cadastrandos Novos Alunos")
 
         conexao = abrir_conexao()
         cursor = conexao.cursor()
@@ -360,7 +360,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
         
         if not resultado:
             print("ERRO: O plano selecionado não existe")
-            continuar = exibir_submenu("Cadastrando Novo Aluno")       
+            continuar = exibir_submenu("Cadastrando Novos Alunos")       
         else:
             try:
                 cursor.execute("SELECT qtde_aulas FROM planos WHERE id = %s", (novo_plano,))
@@ -385,7 +385,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
                 if 'conexao' in locals() and conexao.is_connected():
                     cursor.close()
                     conexao.close()
-            continuar = exibir_submenu("Cadastrando Novo Aluno")
+            continuar = exibir_submenu("Cadastrando Novos Alunos")
 
 
 def cad_produtos():
@@ -400,12 +400,24 @@ def cad_produtos():
             continuar = exibir_submenu("Cadastrando Novo Aluno")
 
         # inputs para receber o nome e categoria do novo produto/serviço
-        print(" ----- Cadastrar Produto ou Serviço ----- \n")
-        novo_nome = input("Qual o nome do novo produto/serviço?\n")
-        nova_categoria = input("Qual categoria esse novo produto/serviço? (Alimentos, Bebidas, Serviços)\n")
-        if nova_categoria.lower() != "alimentos" and nova_categoria.lower() != "bebidas" and nova_categoria.lower() != "serviços":
-            print("ERRO: A categoria deve ser APENAS 'Alimentos', 'Bebidas' ou 'Serviços'! Verifique com cuidado!")
-            return
+        print(" ----- Cadastrar Produto ou Serviço ----- ")
+        novo_nome = input("\nQual o nome do novo produto/serviço?")
+        print(
+            "1 - Serviços",
+            "2 - Equipamentos",
+            "3 - Alimentos",
+            "4 - Bebidas",
+            "5 - Suplementos",
+            "6 - Cosméticos",
+            "7 - Diversos"
+        )
+        try:
+            nova_categoria = int(input("\nQual categoria esse novo produto/serviço? "))
+        except ValueError:
+            print("")
+        if nova_categoria == 1:
+            print("")
+        
 
         # inputs para receber o preço e quantidade do novo produto/serviço
         try:

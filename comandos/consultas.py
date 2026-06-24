@@ -1,28 +1,3 @@
-# def alt_cad_aluno(): #===============================================ALTERA CADASTRO ALUNO===
-#     '''
-#     Essa função vai permitir que o usuário altere os dados 
-#     '''
-    
-#     continuar = 1
-#     while True:
-#         if continuar == 2: #-> Se o usuário escolheu sair (parar de continuar)
-#             break
-#         elif continuar == 0: #-> Se o usuário digitou o comando errado no submenu de continuidade
-#             continuar = exibir_submenu("Alterando Cadastro dos Alunos")
-
-#         exibir_users() #adicionei pra exibir aqui antes do input pra escolher qual
-        
-#         try:
-#             id_aluno
-
-
-# except ValueError:
-#     print("ERRO: O ID deve ser preenchido apenas com números inteiros")
-#     continuar = exibir_submenu("Alterando Cadastro de Produtos")
-#     continue
-
-
-
 import mysql.connector
 from banco_dados import abrir_conexao
 
@@ -44,7 +19,7 @@ def consulta_geral():
             WHERE(
                 LOWER(aluno.nome) LIKE %s OR
                 LOWER(aluno.email) LIKE %s OR
-                aluno.aulas_disp LIKE %s OR
+                CAST(aluno.aulas_disp AS DECIMAL(10,2)) LIKE %s OR
                 LOWER(planos.nome) LIKE %s
             ) AND aluno.ativo = 1
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
@@ -52,7 +27,7 @@ def consulta_geral():
         resultado = cursor.fetchall()
         
         if len(resultado) == 0:
-            print("Nenhum resultado encontrado.")
+            print(f"Nenhum aluno com '{termo_busca}' encontrado.\n")
         else:
             print("\nAlunos:")
             for aluno in resultado:
@@ -64,15 +39,15 @@ def consulta_geral():
             FROM planos
             WHERE planos.ativo = 1 AND (
                 LOWER(nome) LIKE %s OR
-                preco LIKE %s OR
-                qtde_aulas LIKE %s
+                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
+                CAST(qtde_aulas AS DECIMAL(10,2)) LIKE %s
             )
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
 
         resultado = cursor.fetchall()
         
         if len(resultado) == 0:
-            print("Nenhum resultado encontrado.")
+            print(f"Nenhum plano com '{termo_busca}' resultado encontrado.\n")
         else:
             print("\nPlanos:")
             for plano in resultado:
@@ -85,15 +60,15 @@ def consulta_geral():
             WHERE prodserv.ativo = 1 AND (
                 LOWER(nome) LIKE %s OR
                 LOWER(categoria) LIKE %s OR
-                preco LIKE %s OR
-                qtde LIKE %s
+                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
+                CAST(qtde AS DECIMAL(10,2)) LIKE %s
             )
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
 
         resultado = cursor.fetchall()
         
         if len(resultado) == 0:
-            print("Nenhum resultado encontrado.")
+            print(f"Nenhum produto ou serviço com '{termo_busca}' resultado encontrado.\n")
         else:
             print("\nProdutos / Serviços:")
             for prodserv in resultado:
@@ -112,7 +87,7 @@ def consulta_geral():
 
 def consulta_alunos():
     print("\nConsulta de alunos\n")
-    
+
     termo_busca = input("Buscar por: ").strip().lower()
 
     try:
@@ -127,7 +102,7 @@ def consulta_alunos():
             WHERE aluno.ativo = 1 AND (
                 LOWER(aluno.nome) LIKE %s OR
                 LOWER(aluno.email) LIKE %s OR
-                aluno.aulas_disp LIKE %s OR
+                CAST(aluno.aulas_disp AS DECIMAL(10,2)) LIKE %s OR
                 LOWER(planos.nome) LIKE %s
             )
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
@@ -171,8 +146,8 @@ def consulta_produtos():
             WHERE prodserv.ativo = 1 AND (
                 LOWER(nome) LIKE %s OR
                 LOWER(categoria) LIKE %s OR
-                preco LIKE %s OR
-                qtde LIKE %s
+                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
+                CAST(qtde AS DECIMAL(10,2)) LIKE %s
             )
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
 
@@ -180,7 +155,7 @@ def consulta_produtos():
 
         # cursor.close()
         # conexao.close()
-        
+
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
@@ -213,8 +188,8 @@ def consulta_planos():
             FROM planos
             WHERE planos.ativo = 1 AND (
                 LOWER(nome) LIKE %s OR
-                preco LIKE %s OR
-                qtde_aulas LIKE %s
+                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
+                CAST(qtde_aulas AS DECIMAL(10,2)) LIKE %s
             )
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
 

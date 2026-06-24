@@ -97,12 +97,12 @@ def submenu_consulta(): #===============================================EXIBE SU
     ''' 
     Essa def mostra as opções que o usuário terá para repor estoque (itens individuais ou)
     '''
-    print(" ----- Consultas ----- \n")
     print("Qual tipo de consulta desejado?\n",
-          " [0] - Consulta geral\n",
-          " [1] - Consulta de alunos\n",
-          " [2] - Consulta de produtos/serviços\n",
-          " [3] - Consulta de planos\n",)
+          " [1] - Consulta geral\n",
+          " [2] - Consulta de alunos\n",
+          " [3] - Consulta de produtos/serviços\n",
+          " [4] - Consulta de planos\n",
+          " [0] - Sair de consultas\n",)
     
     try:
         consulta = int(input("Consulta desejada: "))
@@ -111,12 +111,14 @@ def submenu_consulta(): #===============================================EXIBE SU
         return
 
     if consulta == 0:
-        consulta_geral()
+        return
     elif consulta == 1:
-        consulta_alunos()
+        consulta_geral()
     elif consulta == 2:
-        consulta_produtos()
+        consulta_alunos()
     elif consulta == 3:
+        consulta_produtos()
+    elif consulta == 4:
         consulta_planos()
     else:
         print("Opção inválida, selecione uma opção válida")
