@@ -1,28 +1,3 @@
-# def alt_cad_aluno(): #===============================================ALTERA CADASTRO ALUNO===
-#     '''
-#     Essa função vai permitir que o usuário altere os dados 
-#     '''
-    
-#     continuar = 1
-#     while True:
-#         if continuar == 2: #-> Se o usuário escolheu sair (parar de continuar)
-#             break
-#         elif continuar == 0: #-> Se o usuário digitou o comando errado no submenu de continuidade
-#             continuar = exibir_submenu("Alterando Cadastro dos Alunos")
-
-#         exibir_users() #adicionei pra exibir aqui antes do input pra escolher qual
-        
-#         try:
-#             id_aluno
-
-
-# except ValueError:
-#     print("ERRO: O ID deve ser preenchido apenas com números inteiros")
-#     continuar = exibir_submenu("Alterando Cadastro de Produtos")
-#     continue
-
-
-
 import mysql.connector
 from banco_dados import abrir_conexao
 
