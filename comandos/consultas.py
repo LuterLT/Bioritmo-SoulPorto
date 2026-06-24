@@ -48,18 +48,13 @@ def consulta_geral():
                 LOWER(planos.nome) LIKE %s
             ) AND aluno.ativo = 1
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
-        #F no chat pro Davi, erro intankavel
-        # cara ta cantando minha derrota antes de eu desistir
-        # absurdo
-        resultado = cursor.fetchall()
 
-        # cursor.close()
-        # conexao.close()
+        resultado = cursor.fetchall()
         
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
-            print("Alunos:\n")
+            print("\nAlunos:")
             for aluno in resultado:
                 print(f" -> [{aluno[0]}] {aluno[1]} | Email: {aluno[2]} | Plano: {aluno[4]} | Aulas Disponiveis: {aluno[3]}")
 
@@ -75,17 +70,14 @@ def consulta_geral():
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
 
         resultado = cursor.fetchall()
-
-        # cursor.close()
-        # conexao.close()
         
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
-            print("Planos:\n")
+            print("\nPlanos:")
             for plano in resultado:
                 print(f" -> [{plano[0]}] {plano[1]} | Preço: {plano[2]} | Aulas permitidas: {plano[3]}")
-        
+
         # faz a busca na tabela prodserv
         cursor.execute("""
             SELECT id, nome, categoria, preco, qtde
@@ -99,16 +91,14 @@ def consulta_geral():
         """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
 
         resultado = cursor.fetchall()
-
-        # cursor.close()
-        # conexao.close()
         
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
-            print("Produtos / Serviços:\n")
+            print("\nProdutos / Serviços:")
             for prodserv in resultado:
                 print(f" -> [{prodserv[0]}] {prodserv[1]} | Categoria: {prodserv[2]} | Preço: {prodserv[3]} | Quantidade em estoque: {prodserv[4]}")
+            print("\n")
 
     except mysql.connector.Error as erro:
         print(f"ERRO DE BANCO DE DADOS (consulta geral - linha 89): {erro}")
@@ -153,6 +143,7 @@ def consulta_alunos():
             print("Alunos:\n")
             for aluno in resultado:
                 print(f" -> [{aluno[0]}] {aluno[1]} | Email: {aluno[2]} | Plano: {aluno[4]} | Aulas Disponiveis: {aluno[3]}")
+            print("\n")
 
     except mysql.connector.Error as erro:
         print(f"ERRO DE BANCO DE DADOS (consulta aluno - linha 133): {erro}")
@@ -196,6 +187,7 @@ def consulta_produtos():
             print("Produtos / Serviços:\n")
             for prodserv in resultado:
                 print(f" -> [{prodserv[0]}] {prodserv[1]} | Categoria: {prodserv[2]} | Preço: {prodserv[3]} | Quantidade em estoque: {prodserv[4]}")
+            print("\n")
 
     except mysql.connector.Error as erro:
         print(f"ERRO DE BANCO DE DADOS (consulta produto - linha 176): {erro}")
@@ -237,6 +229,7 @@ def consulta_planos():
             print("Planos:\n")
             for plano in resultado:
                 print(f" -> [{plano[0]}] {plano[1]} | Preço: {plano[2]} | Aulas permitidas: {plano[3]}")
+            print("\n")
 
     except mysql.connector.Error as erro:
         print(f"ERRO DE BANCO DE DADOS (consulta plano - linhas 217): {erro}")

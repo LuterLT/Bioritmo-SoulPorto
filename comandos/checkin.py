@@ -92,6 +92,9 @@ def checkin():
             except ValueError:
                 print("ERRO: Digite apenas números inteiros!")
                 return
+            if limite <= 0:
+                print("Valor inválido, valor minimo: '1'")
+                return
             # exibe uma lista dos últimos check-ins, se limitando a quantidade que usuario delimitou
             exibir_checkin(limite)
             return

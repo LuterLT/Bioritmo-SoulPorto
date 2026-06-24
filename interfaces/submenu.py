@@ -101,7 +101,7 @@ def submenu_consulta(): #===============================================EXIBE SU
     print("Qual tipo de consulta desejado?\n",
           " [0] - Consulta geral\n",
           " [1] - Consulta de alunos\n",
-          " [2] - Consulta de produtos\n",
+          " [2] - Consulta de produtos/serviços\n",
           " [3] - Consulta de planos\n",)
     
     try:
@@ -118,5 +118,5 @@ def submenu_consulta(): #===============================================EXIBE SU
         consulta_produtos()
     elif consulta == 3:
         consulta_planos()
-
-
+    else:
+        print("Opção inválida, selecione uma opção válida")
