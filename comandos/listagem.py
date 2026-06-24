@@ -1,13 +1,10 @@
+from banco_dados import abrir_conexao
+
 import mysql.connector
 
-from banco_dados import abrir_conexao
-from interfaces.funcontinuar import exibir_submenu
 
-
-def consulta_geral():
-    print("\nConsulta geral\n")
-    
-    termo_busca = input("Buscar por: ").strip().lower()
+def listagem_geral():
+    print("\nListagem geral\n")
 
     try:
         conexao = abrir_conexao()
@@ -18,18 +15,14 @@ def consulta_geral():
             SELECT aluno.id,  aluno.nome, aluno.email, aluno.aulas_disp, planos.nome
             FROM aluno
             INNER JOIN planos ON aluno.id_plano = planos.id
-            WHERE(
-                LOWER(aluno.nome) LIKE %s OR
-                LOWER(aluno.email) LIKE %s OR
-                CAST(aluno.aulas_disp AS DECIMAL(10,2)) LIKE %s OR
-                LOWER(planos.nome) LIKE %s
-            ) AND aluno.ativo = 1
-        """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
+            WHERE aluno.ativo = 1
+        """)
 
         resultado = cursor.fetchall()
         
         if len(resultado) == 0:
-            print(f"Nenhum aluno com '{termo_busca}' encontrado.\n")
+            print(f"Nenhum aluno encontrado.\n")
+            print("Aperte ENTER para continuar")
         else:
             print("\nAlunos:")
             for aluno in resultado:
@@ -42,17 +35,13 @@ def consulta_geral():
         cursor.execute("""
             SELECT id, nome, preco, qtde_aulas
             FROM planos
-            WHERE planos.ativo = 1 AND (
-                LOWER(nome) LIKE %s OR
-                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
-                CAST(qtde_aulas AS DECIMAL(10,2)) LIKE %s
-            )
-        """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
+            WHERE planos.ativo = 1
+        """)
 
         resultado = cursor.fetchall()
         
         if len(resultado) == 0:
-            print(f"Nenhum plano com '{termo_busca}' resultado encontrado.\n")
+            print(f"Nenhum plano encontrado.\n")
         else:
             print("\nPlanos:")
             for plano in resultado:
@@ -63,18 +52,13 @@ def consulta_geral():
         cursor.execute("""
             SELECT id, nome, categoria, preco, qtde
             FROM prodserv
-            WHERE prodserv.ativo = 1 AND (
-                LOWER(nome) LIKE %s OR
-                LOWER(categoria) LIKE %s OR
-                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
-                CAST(qtde AS DECIMAL(10,2)) LIKE %s
-            )
-        """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
+            WHERE prodserv.ativo = 1
+        """,)
 
         resultado = cursor.fetchall()
-        
+
         if len(resultado) == 0:
-            print(f"Nenhum produto ou serviço com '{termo_busca}' resultado encontrado.\n")
+            print(f"Nenhum produto / serviço encontrado.\n")
         else:
             print("\nProdutos / Serviços:")
             for prodserv in resultado:
@@ -84,19 +68,16 @@ def consulta_geral():
             print("\n")
 
     except mysql.connector.Error as erro:
-        print(f"ERRO DE BANCO DE DADOS (consulta geral - linha 89): {erro}")
-        continuar = exibir_submenu("'consulta geral'")
+        print(f"ERRO DE BANCO DE DADOS: {erro}")
+        input("Aperte ENTER para continuar")
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
 
 
-
-def consulta_alunos():
-    print("\nConsulta de alunos\n")
-
-    termo_busca = input("Buscar por: ").strip().lower()
+def listagem_alunos():
+    print("\nListagem de alunos\n")
 
     try:
         conexao = abrir_conexao()
@@ -107,18 +88,10 @@ def consulta_alunos():
             SELECT aluno.id,  aluno.nome, aluno.email, aluno.aulas_disp, planos.nome
             FROM aluno
             INNER JOIN planos ON aluno.id_plano = planos.id
-            WHERE aluno.ativo = 1 AND (
-                LOWER(aluno.nome) LIKE %s OR
-                LOWER(aluno.email) LIKE %s OR
-                CAST(aluno.aulas_disp AS DECIMAL(10,2)) LIKE %s OR
-                LOWER(planos.nome) LIKE %s
-            )
-        """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
+            WHERE aluno.ativo = 1
+        """)
 
         resultado = cursor.fetchall()
-
-        # cursor.close()
-        # conexao.close()
         
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
@@ -132,20 +105,17 @@ def consulta_alunos():
             print("\n")
 
     except mysql.connector.Error as erro:
-        print(f"ERRO DE BANCO DE DADOS (consulta aluno - linha 133): {erro}")
-        continuar = exibir_submenu("'consulta de alunos'")
+        print(f"ERRO DE BANCO DE DADOS: {erro}")
+        input("Aperte ENTER para continuar")
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
 
 
-
-def consulta_produtos():
-    print("\nConsulta de produtos\n")
+def listagem_produtos():
+    print("\nListagem de produtos\n")
     
-    termo_busca = input("Buscar por: ").strip().lower()
-
     try:
         conexao = abrir_conexao()
         cursor = conexao.cursor()
@@ -154,13 +124,8 @@ def consulta_produtos():
         cursor.execute("""
             SELECT id, nome, categoria, preco, qtde
             FROM prodserv
-            WHERE prodserv.ativo = 1 AND (
-                LOWER(nome) LIKE %s OR
-                LOWER(categoria) LIKE %s OR
-                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
-                CAST(qtde AS DECIMAL(10,2)) LIKE %s
-            )
-        """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
+            WHERE prodserv.ativo = 1
+        """)
 
         resultado = cursor.fetchall()
 
@@ -175,19 +140,17 @@ def consulta_produtos():
             print("\n")
 
     except mysql.connector.Error as erro:
-        print(f"ERRO DE BANCO DE DADOS (consulta produto - linha 176): {erro}")
-        continuar = exibir_submenu("'consulta de produtos / serviços'")
+        print(f"ERRO DE BANCO DE DADOS: {erro}")
+        input("Aperte ENTER para continuar")
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
 
 
-def consulta_planos():
-    print("\nConsulta de planos\n")
+def listagem_planos():
+    print("\nListagem de planos\n")
     
-    termo_busca = input("Buscar por: ").strip().lower()
-
     try:
         conexao = abrir_conexao()
         cursor = conexao.cursor()
@@ -196,15 +159,11 @@ def consulta_planos():
         cursor.execute("""
             SELECT id, nome, preco, qtde_aulas
             FROM planos
-            WHERE planos.ativo = 1 AND (
-                LOWER(nome) LIKE %s OR
-                CAST(preco AS DECIMAL(10,2)) LIKE %s OR
-                CAST(qtde_aulas AS DECIMAL(10,2)) LIKE %s
-            )
-        """, (f"%{termo_busca}%", f"%{termo_busca}%", f"%{termo_busca}%"))
+            WHERE planos.ativo = 1
+        """)
 
         resultado = cursor.fetchall()
-
+        
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
@@ -216,7 +175,7 @@ def consulta_planos():
 
     except mysql.connector.Error as erro:
         print(f"ERRO DE BANCO DE DADOS: {erro}")
-        continuar = exibir_submenu("'consulta de planos'")
+        input("Aperte ENTER para continuar")
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()

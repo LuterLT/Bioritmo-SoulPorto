@@ -2,12 +2,13 @@
 import mysql.connector
 
 from banco_dados import iniciar_db, abrir_conexao
-from interfaces.interface import exibir_menu, exibir_checkin
 from comandos.checkin import checkin
+from comandos.carrinho import carrinho_venda
 
 # importação dos submenus de cada função
 from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta
 from interfaces.funcontinuar import exibir_submenuHome
+from interfaces.interface import exibir_menu
 
 
 #iniciar o programa
@@ -49,38 +50,47 @@ while True:
         print(f"Caixa Atual: {caixa:.2f}\nEncerrando o Sistema...")
         break
 
-    # responsa davi
     elif menu == 1:
-        checkin()
+        checkin() #FINALIZADA
     
     elif menu == 2:
         print("\n-----Cadastros/Alterações Cadastrais-----\n")
-        submenu_cad()
+        submenu_cad() #FINALIZADA
     
     elif menu == 3:
         print("\n-----Vendas-----\n")
+        carrinho_venda() #iniciado
 
     elif menu == 4:
         print("\n-----Repor Estoque-----\n")
-        submenu_est()
+        submenu_est() #em alterações
     
     elif menu == 5:
-        print("\n-----Consulta-----\n")
-        submenu_consulta()
+        print("\n-----Listar Informações-----\n")
+        #   submenu_listar()
 
     elif menu == 6:
-        print("\n-----Calcular IMC-----")
-    
+        print("\n-----Consulta-----\n")
+        submenu_consulta() #em alterações
+
     elif menu == 7:
-        print("\n-----Controle Financeiro-----\n")   
-    
+        print("\n-----Ativar/Desativar Cadastros-----")
+        # submenu_atv_dst()
+
     elif menu == 8:
+        print("\n-----Calcular IMC-----")
+        #não iniciada
+    
+    elif menu == 9:
+        print("\n-----Controle Financeiro-----\n")   
+        #não iniciada
+    
+    elif menu == 10:
         print("\n-----Exportar Relatórios-----\n")
+        #não iniciada
 
     else:
         print("ERRO: Operação Inválida")
     
     continuar = exibir_submenuHome() #-> Menu de Continuidade
-
-
-
+    continue

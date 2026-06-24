@@ -107,7 +107,7 @@ def iniciar_db():
             alunos_iniciais = [
                 ("Davi Hiluany", "davi.hiluany@gmail.com", 65.00, 1.65, 1, 1),
                 ("Gabriella Iglesias", "gabriella.iglesias@gmail.com", 65.00, 1.65, 1, 1),
-                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 65.00, 1.85, 1, 1),
+                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 65.00, 2.27, 1, 1),
                 ("João Pedro de França", "joao.defranca@gmail.com", 65.00, 1.65, 1, 1),
                 ("Lucas Imparato", "lucas.imparato@gmail.com", 65.00, 1.65, 1, 1),
             ]

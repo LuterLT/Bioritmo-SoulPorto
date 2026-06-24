@@ -1,29 +1,39 @@
 import mysql.connector
 import datetime
 
+from interfaces.funcontinuar import exibir_submenu
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_users, exibir_checkin
 
 
 def checkin():
-    print("\n-----Check In-----\n")
+    continuar = 1
     while True:
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continuar = exibir_submenu("'Fazer check-in'")
+        
+        print("\n-----Check-in-----\n")
+
         print("\n[1] - Fazer check-in",
-            "\n[2] - Listar últimos check-in")
+              "\n[2] - Listar últimos check-In")
         try:
-            opt_checkin = int(input("\nEscolha uma das operações do Check In acima: \n"))
+            opt_checkin = int(input("\nEscolha uma das operações do check-in acima: \n"))
         except ValueError:
             print("ERRO: Digite apenas números inteiros!")
-            return
+            continuar = exibir_submenu("'Fazer Check-In'")
+            continue
 
         if opt_checkin == 1: # opção que realiza o check-in
             exibir_users()
 
             try: # pega o id do aluno para realizar o check-in
-                id_user = int(input("\nQual id do aluno a fazer Check In?\n"))
+                id_user = int(input("\nQual id do aluno a fazer check-in?\n"))
             except ValueError:
                 print("ERRO: Digite apenas números inteiros!")
-                return
+                continuar = exibir_submenu("'Fazer check-in'")
+                continue
             
             conexao = None
             try:
@@ -39,7 +49,8 @@ def checkin():
                 # verificar se o aluno foi encontrado
                 if resultado is None:
                     print(f"\nERRO: Aluno com ID {id_user} não encontrado ou inativo.")
-                    return
+                    continuar = exibir_submenu("'Fazer check-in'")
+                    continue
 
                 aulas_disp = resultado[0]
 
@@ -66,12 +77,13 @@ def checkin():
                     )
                     print(f"Aulas restantes para o aluno: {aulas_disp - 1}")
 
-                    return
+                    continuar = exibir_submenu("'Fazer check-in'")
+                    continue
 
                 else:
                     # se o valor for igual a 0, retornar um aviso de erro
                     print(
-                        "\nERRO: O aluno não possui aulas disponíveis para realizar o chek-in!"
+                        "\nERRO: O aluno não possui aulas disponíveis para realizar o check-in!"
                     )
 
             except mysql.connector.Error as erro:
@@ -88,17 +100,23 @@ def checkin():
         
         elif opt_checkin == 2: # opção que lista os check-in
             try:
-                limite = int(input("\nListar quantos Check In?\n"))
+                limite = int(input("\nListar quantos check-in?\n"))
             except ValueError:
                 print("ERRO: Digite apenas números inteiros!")
-                return
+                continuar = exibir_submenu("'fazer check-in'")
+                continue
             if limite <= 0:
-                print("Valor inválido, valor minimo: '1'")
-                return
+                print("Valor inválido, valor mínimo: '1'")
+                continuar = exibir_submenu("'fazer check-in'")
+                continue
             # exibe uma lista dos últimos check-ins, se limitando a quantidade que usuario delimitou
             exibir_checkin(limite)
-            return
+            continuar = exibir_submenu("'fazer check-in'")
+            continue
 
         else: # opção invalida
             print("ERRO: Digite apenas opções válidas!")
-            return
+            continuar = exibir_submenu("'fazer check-in'")
+            continue
+
+
