@@ -59,12 +59,13 @@ def exibir_prod(): #=============================================EXIBIR PRODUTOS
         cursor.execute("""
             SELECT id, nome, qtde, categoria, preco
             FROM prodserv
-            WHERE ativo = 1
+            WHERE ativo = 1 
         """)
         resultado = cursor.fetchall()
-        
+            
         for produto in resultado:
             print(f"-> [{produto[0]}] {produto[1]} | Quantidade em Estoque: {produto[2]} | Categoria: {produto[3]} | Preço: R$ {produto[4]:.2f}")
+
     except mysql.connector.Error as erro:
         print(f"\nERRO: Ocorreu um erro no banco, {erro}")
         input("Aperte ENTER para Continuar")

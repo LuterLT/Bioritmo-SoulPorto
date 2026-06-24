@@ -25,7 +25,7 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
         elif comando == 1: #================== REALIZAR NOVO CADASTRO
             while True:
                 try:
-                    print("\n1 - Cadastro de Alunos\n2 - Cadastro de Produtos\n3 - Cadastro de Planos\n0 - Voltar")
+                    print("\n1 - Cadastro de Alunos\n2 - Cadastro de Produtos/Serviços\n3 - Cadastro de Planos\n0 - Voltar")
                     subcomando  = int(input("\nQual tipo de cadastro deseja realizar? "))
                 except ValueError:
                     print("ERRO: Digite apenas números inteiros!")
@@ -36,7 +36,7 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
                     print("\n- Cadastro de Alunos -\n")
                     cad_aluno()
                 elif subcomando == 2:
-                    print("\n- Cadastro de Produtos -\n")
+                    print("\n- Cadastro de Produtos / Serviços -\n")
                     cad_produtos()
                 elif subcomando == 3:
                     print("\n- Cadastro de Planos -\n")
@@ -59,7 +59,7 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
                     print("\n- Alterar Cadastro de Alunos -\n")
                     alt_cad_aluno()
                 elif subcomando == 2:
-                    print("\n- Alterar Cadastro de Produtos -\n")
+                    print("\n- Alterar Cadastro de Produtos/Serviços -\n")
                     alt_cad_produtos()
                 elif subcomando == 3:
                     print("\n- Alterar Cadastro de Planos -\n")

@@ -3,6 +3,9 @@ import datetime
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_planos
 from interfaces.funcontinuar import exibir_submenu
+from comandos.funcionalidades import validar_email
+
+#cadastro de alunos, produtos e planos...
 
 
 def cad_aluno(): #==============================  CADASTRA ALUNOS ===========================
@@ -15,21 +18,45 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
             break
         elif continuar == 0:
             continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continue
         
         novo_nome = input("\nDigite o nome do novo aluno: ").strip()
         novo_email = input("Digite o e-mail do novo aluno: ").strip()
+        if not validar_email(novo_email):
+            print("\nERRO: Email Inválido")
+            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continue
 
-        novo_peso_str = input("Digite o peso (Kg) do aluno (ou ENTER para deixar vazio): ") or ""
-        nova_altura_str = input("Digite a altura (m) do aluno (ou ENTER para deixar vazio): ") or ""
+        novo_peso_str = input("Digite o peso (Kg) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
+        nova_altura_str = input("Digite a altura (m) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
         try:
             novo_peso = float(novo_peso_str) if novo_peso_str else 0.0
+            if novo_peso > 700 or novo_peso < 0:
+                print("\nERRO: Peso Inválido")
+                continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+                continue
+        except ValueError:
+            print("\nERRO: O Peso Deve ser Preenchido com números")
+            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continue
+        try:  
             nova_altura = float(nova_altura_str) if nova_altura_str else 0.0
+            if nova_altura > 3.0 or nova_altura < 0:
+                print("\nERRO: Altura Inválida")
+                continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+                continue
+        except ValueError:
+            print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
+            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continue
+        try:
             print("\nPlanos Disponíves:")
             exibir_planos()
             novo_plano = int(input("\nQual plano deseja contratar? "))
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
             continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continue
 
         conexao = abrir_conexao()
         cursor = conexao.cursor()
@@ -86,39 +113,58 @@ def cad_produtos():
         if continuar == 2:
             break
         elif continuar == 0:
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continuar = exibir_submenu("'Cadastrar Novo Produto'")
 
         # inputs para receber o nome e categoria do novo produto/serviço
         print(" ----- Cadastrar Produto ou Serviço ----- ")
-        novo_nome = input("\nQual o nome do novo produto/serviço?")
+        novo_nome = input("\nQual o nome do novo produto/serviço? ")
         print(
-            "1 - Serviços",
-            "2 - Equipamentos",
-            "3 - Alimentos",
-            "4 - Bebidas",
-            "5 - Suplementos",
-            "6 - Cosméticos",
-            "7 - Diversos"
+            "\n1 - Serviços",
+            "\n2 - Equipamentos",
+            "\n3 - Alimentos",
+            "\n4 - Bebidas",
+            "\n5 - Suplementos",
+            "\n6 - Cosméticos",
+            "\n7 - Diversos"
         )
         try:
-            nova_categoria = int(input("\nQual categoria esse novo produto/serviço? "))
+            nova_categoria_int = int(input("\nQual categoria esse novo produto/serviço? "))
         except ValueError:
-            print("")
-        if nova_categoria == 1:
-            print("")
-        
+            print("ERRO: Opção deve ser um número inteiro")
+            continuar = exibir_submenu("'Cadastrar Novo Produto'")
+            continue
+
+        if nova_categoria_int == 1:
+            nova_categoria = "Serviços"
+        elif nova_categoria_int == 2:
+            nova_categoria = "Equipamentos"
+        elif nova_categoria_int == 3:
+            nova_categoria = "Alimentos"
+        elif nova_categoria_int == 4:
+            nova_categoria = "Bebidas"
+        elif nova_categoria_int == 5:
+            nova_categoria = "Suplementos"
+        elif nova_categoria_int == 6:
+            nova_categoria = "Cosméticos"
+        elif nova_categoria_int == 7:
+            nova_categoria = "Diversos"
+        else:
+            print("Opção Inválida")
+
 
         # inputs para receber o preço e quantidade do novo produto/serviço
         try:
-            novo_preco = float(input("Qual o valor (R$) desse novo produto/serviço?\n"))
-            if nova_categoria.lower() == "serviços":
-                    nova_qtde = 0
+            novo_preco = float(input("Qual o valor (R$) desse novo produto/serviço? "))
+
+            if nova_categoria_int == 1:
+                nova_qtde = 1
             else:
-                nova_qtde = int(input("Qual a quantidade inicial desse novo produto?\n"))
+                nova_qtde = int(input("Qual a quantidade inicial desse novo produto? "))
                 
         except ValueError:
-            print("ERROR: Entrada invalida!")
-            return
+            print("ERROR: Entrada Inválida, o preço deve ser um número!")
+            continuar = exibir_submenu("'Cadastrar Novo Produto / Serviço'")
+            continue
         
         try:
             conexao = abrir_conexao()
@@ -130,12 +176,12 @@ def cad_produtos():
             """, (novo_nome, nova_categoria, novo_preco, nova_qtde))
 
             conexao.commit()
-            print(f"Produto/Serviço {novo_nome} adicionado com sucesso!")
-            return
-        
+            print(f"\nProduto/Serviço {novo_nome} adicionado com sucesso!")
+            continuar = exibir_submenu("'Cadastrar Novo Produto / Serviço'")
+            continue
+
         except mysql.connector.Error as erro:
             conexao.rollback()
-            print("arquivo cadastro - linha 446")
             print(f"ERRO FATAL DE CONEXÃO COM O BANCO (banco_dados): {erro}")
             
         finally:
@@ -160,16 +206,25 @@ def cad_planos():
         
         # input para receber o nome do novo plano
         print(" ----- Cadastrar Plano de Aulas ----- \n")
-        novo_nome = input("Qual o nome do novo plano?\n")
+        novo_nome = input("Qual o nome do novo plano? ")
     
         # inputs para receber o preço e quantidade de aulas do novo plano
         try:
-            novo_preco = float(input("Qual o valor desse novo plano?\n"))
-            nova_qtde_aulas = int(input("Qual a quantidade de aulas desse novo plano?\n"))
+            novo_preco = float(input("Qual o valor desse novo plano? "))
         except ValueError:
-            print("ERROR: Entrada inválida!")
-            return
-        
+            print("\nERRO: Entrada inválida, o valor deve ser um número!")
+            input("Aperte ENTER para continuar")
+            continuar = exibir_submenu("'Cadastrar Novo Plano'")
+            continue
+
+        try:
+            nova_qtde_aulas = int(input("Qual a quantidade de aulas desse novo plano? "))
+        except ValueError:
+            print("\nERRO: Entrada inválida, a qtde de aulas deve ser um número inteiro!")
+            input("Aperte ENTER para continuar")
+            continuar = exibir_submenu("'Cadastrar Novo Plano'")
+            continue
+
         try:
             conexao = abrir_conexao()
             cursor = conexao.cursor()
@@ -180,13 +235,13 @@ def cad_planos():
             """, (novo_nome, novo_preco, nova_qtde_aulas))
 
             conexao.commit()
-            print(f"Plano {novo_nome} adicionado com sucesso!")
-            return
+            print(f"\nPlano {novo_nome} adicionado com sucesso!")
+            continuar = exibir_submenu("'Cadastrar Novo Plano'")
+            continue
         
         except mysql.connector.Error as erro:
             conexao.rollback()
-            print("arquivo cadastro - linha 496")
-            print(f"ERRO FATAL DE CONEXÃO COM O BANCO: {erro}")
+            print(f"ERRO FATAL DE CONEXÃO COM O BANCO: {erro}")            
             
         finally:
             if 'conexao' in locals() and conexao.is_connected():

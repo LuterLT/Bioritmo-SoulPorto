@@ -263,7 +263,7 @@ Você Selecionou o Plano:
                 
                 novo_nome_plano = input("Digite o novo nome do plano: ").strip() or plano_atual[1]
 
-                novo_preco_plano_str  = input("Digite o novo preço do plano: ").strip()
+                novo_preco_plano_str  = input("Digite o novo preço do plano: ").strip().replace(",", ".")
                 try:
                     novo_preco_plano = float(novo_preco_plano_str) if novo_preco_plano_str else plano_atual[2]
                 except ValueError:

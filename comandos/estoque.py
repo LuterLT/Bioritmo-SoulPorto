@@ -28,6 +28,7 @@ def repor_est():
 
             if not prod:
                 print("ERRO: O produto buscado não existe ou está inativo!")
+                continuar = exibir_submenu("'Repor Estoque'")
                 continue
             elif prod[1].lower() == "serviços":
                 print("ERRO: Não é possível alterar o estoque de serviços!")
@@ -76,6 +77,19 @@ def red_est():
             print("ERRO: O ID deve ser um número inteiro!")
             continuar = exibir_submenu("'Reduzir Estoque'")
             continue
+        conexao = abrir_conexao()
+        cursor = conexao.cursor()
+
+        cursor.execute("SELECT nome, qtde FROM prodserv WHERE id = %s AND ativo = 1", (id_prod,))
+        prod = cursor.fetchone()
+
+        if not prod:
+            print("ERRO: O produto buscado não existe ou está inativo!")
+            continuar = exibir_submenu("'Reduzir Estoque'")
+            continue
+        
+
+
 
         
 

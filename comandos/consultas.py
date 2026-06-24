@@ -221,3 +221,4 @@ def consulta_planos():
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
+
