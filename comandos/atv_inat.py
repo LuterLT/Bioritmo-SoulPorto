@@ -28,19 +28,19 @@ def plano_atv_inat():
         print("\nAtivar ou desativar plano?\n",
             " [1] - Ativar plano\n",
             " [2] - Inativar plano\n",
-            " [0] - Sair de consultas\n",)
+            " [0] - Sair de ativar / desativar planos\n",)
         
         try:
-            consulta = int(input("Consulta desejada: "))
+            opc = int(input("Opção desejada: "))
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
             continuar = 0
 
-        if consulta == 0:
+        if opc == 0:
             return
-        elif consulta == 1:
+        elif opc == 1:
             plano_atv()
-        elif consulta == 2:
+        elif opc == 2:
             plano_inat()
         else:
             print("Opção inválida, selecione uma opção válida")
@@ -53,8 +53,8 @@ def plano_atv():
         if continuar == 2:
             break
         elif continuar == 0:
-            continuar = exibir_submenu("'ativar plano'")
-            continue
+            continuar = exibir_submenu("'ativando / inativando planos'")
+            return
 
         try:
             conexao = abrir_conexao()
@@ -111,8 +111,8 @@ def plano_inat():
         if continuar == 2:
             break
         elif continuar == 0:
-            continuar = exibir_submenu("'inativar plano'")
-            continue
+            continuar = exibir_submenu("'ativando / inativando planos'")
+            return
 
         try:
             conexao = abrir_conexao()

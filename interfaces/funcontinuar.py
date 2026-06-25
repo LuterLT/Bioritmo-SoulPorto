@@ -11,7 +11,7 @@ def exibir_submenu(texto): #===========================================MENU CONT
     try:
         comando = int(input("Digite um dos numeros acima: "))
     except ValueError:
-        print("\n! ERRO: Tipo de Dado Inserido Inválido !\nRetornando...\n\n--------------------")
+        print("\n! ERRO: Tipo de Dado Inserido Inválido !\nRetornando...\n--------------------")
         return 0
     if comando == 1:
         return 1
@@ -19,7 +19,7 @@ def exibir_submenu(texto): #===========================================MENU CONT
         print("\nVoltando...\n\n--------------------") 
         return 2
     else:
-        print("\n! ERRO: Comando Inexistente !\nRetornando...\n\n--------------------")
+        print("\n! ERRO: Comando Inexistente !\nRetornando...\n--------------------")
         return 0
 
 def exibir_submenuHome(): #===========================================MENU CONTINUIDADE INICIO
