@@ -1,5 +1,6 @@
 import mysql.connector
 from banco_dados import abrir_conexao
+from interfaces.interface import exibir_users
 import re
 
 #DEF responsavel pela consulta do imc dos alunos
@@ -7,151 +8,125 @@ def consulta_imc():
     """
     Calcula o IMC do usuário.
     """
+    continuar = 1
     while True:
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continue
         try:
             conexao = abrir_conexao()
             cursor = conexao.cursor()
 
-            print("\n========= ALUNOS CADASTRADOS =========")#Busca no db os alunos cadastrados
-
-            cursor.execute("""
-                SELECT id, nome
-                FROM aluno
-                WHERE ativo = 1
-            """)
-
-            alunos = cursor.fetchall()
-
-            if alunos:
-                for aluno in alunos:
-                    print(f"{aluno[0]} - {aluno[1]}")
-            else:
-                print("Nenhum aluno cadastrado.")
-
+            print("\n========= ALUNOS CADASTRADOS =========")
+            exibir_users()
             print("\n0 - Continuar sem aluno cadastrado")
+            try:
+                #Input para inserir o ID do aluno ou pressionar 0 para seguir sem cadastro
+                id_aluno = int(input("\nDigite o ID do aluno ou 0 para continuar sem cadastro: "))
+            except ValueError:#Segurança caso valor inválido
+                print("\nERRO: Digite apenas números inteiros.")
+                continuar = 0
+                continue
 
-            while True:
-                try:
-                    id_aluno = int(  #Input para inserir o ID do aluno ou pressionar 0 para seguir sem cadastro
-                        input(
-                            "\nDigite o ID do aluno ou 0 para continuar sem cadastro: "
-                        )
-                    )
-                except ValueError:#Segurança caso valor inválido
-                    print("\nERRO: Digite apenas números inteiros.")
+            if id_aluno == 0: #calcular IMC de aluno sem cadastro
+                while True:
+                    if continuar == 2:
+                        break
+                    elif continuar == 0:
+                        continue
+                    try:
+                        peso = float(input("Digite o peso do aluno (kg): ").strip().replace(",", ".")) #converte a vírgula "," em ponto "." para que o código não dê erro
+                    except ValueError: #Usuário envia dados não aceitaveis 
+                        print("\nERRO: Digite apenas números para o cálculo de IMC")
 
-                if id_aluno == 0: #calcular IMC de aluno sem cadastro
+                    #Limitações de peso dos alunos
+                    if peso <= 0:
+                        print("\nERRO: O peso deve ser maior que zero!")
+                        continuar = 0
+                        continue
+                    if peso > 700:
+                        print("\nERRO: O peso não pode ser maior que 700kg")
+                        continuar = 0
+                        continue
 
-                    #inserir peso
-                    while True:
-                        try:
-                            peso = float(
-                                input("Digite o peso do aluno (kg): ")
-                                .strip()
-                                .replace(",", ".") #converte a vírgula "," em ponto "." para que o código não dê erro
-                            )
-                            #Limitações de peso dos alunos (Ninguem é tao grande assim!)
-                            if peso <= 0:
-                                print("\nERRO: O peso deve ser maior que zero!")
-                                continue
+                    try:
+                        altura = float(input("Digite a altura do aluno (m): ").strip().replace(",", "."))
+                    except ValueError: #Segurança de codigo caso o usuário insira um dado não aceitavel
+                        print("\nERRO: Digite apenas números para o cálculo de IMC")
+                        continuar = 0
+                        continue
 
-                            if peso > 700:
-                                print("\nERRO: O peso não pode ser maior que 700kg")
-                                continue
-
-                            break
-
-                        except ValueError: #Usuário envia dados não aceitaveis 
-                            print(
-                                "\nERRO: Digite apenas números para o cálculo de IMC"
-                            )
-
-                    #inserir altura
-                    while True:
-                        try:
-                            altura = float( #input para inserir altura
-                                input("Digite a altura do aluno (m): ")
-                                .strip()
-                                .replace(",", ".")
-                            )
-                            # verificação altura para que não seja possível dados negativos
-                            if altura <= 0:
-                                print(
-                                    "\nERRO: A altura deve ser maior que zero"
-                                )
-                                continue
-                            #verificação de altura para que não seja maior que 3 metros de altura! 
-                            if altura > 3:
-                                print(
-                                    "\nERRO: A altura não pode ser maior que 3 metros."
-                                )
-                                continue
-
-                            break
-
-                        except ValueError: #Segurança de codigo caso o usuário insira um dado não aceitavel
-                            print(
-                                "\nERRO: Digite apenas números para o cálculo de IMC"
-                            )
+                    # verificação altura para que não seja possível dados negativos
+                    if altura <= 0:
+                        print("\nERRO: A altura deve ser maior que zero")
+                        continuar = 0
+                        continue
+                    #verificação de altura para que não seja maior que 3 metros de altura! 
+                    if altura > 3:
+                        print("\nERRO: A altura não pode ser maior que 3 metros.")
+                        continuar = 0
+                        continue
                     break
  
-                else: #caso o ID seja diferente de 0
+            else: #caso o ID seja diferente de 0
                 #busca as informações do aluno no bd para ser apresentado no terminal
-                    cursor.execute(""" 
-                        SELECT nome, peso, altura
-                        FROM aluno
-                        WHERE id = %s
-                        AND ativo = 1
-                    """, (id_aluno,))
+                cursor.execute(""" 
+                    SELECT nome, peso, altura
+                    FROM aluno
+                    WHERE id = %s
+                    AND ativo = 1
+                """, (id_aluno,))
 
-                    aluno = cursor.fetchone()
-                    #caso a pesquisa não corresponda a um resultado do bd
-                    if not aluno:
-                        print("\nERRO: Aluno não encontrado.")
-                        continue
+                aluno = cursor.fetchone()
+                #caso a pesquisa não corresponda a um resultado do bd
+                if not aluno:
+                    print("\nERRO: Aluno não encontrado.")
+                    continuar = 0
+                    continue
                 
-                    nome = aluno[0]
-                    #if caso o aluno selecionado tenha optado por não inserir peso e altura
-                    if not aluno[1] or not aluno[2]:
-                        print(
-                            f"\nAluno selecionado: {nome}."
-                            "\nPeso e/ou altura não cadastrados."
-                            "\nInforme os dados para continuar o cálculo"
-                        )
-                        #Insert peso
-                        while True:
-                            try:
-                                peso = float(input("\nDigite o peso (kg): ").strip().replace(",", "."))#Evitar erro de código por uso de vírgula ","
+                nome = aluno[0]
+                #if caso o aluno selecionado tenha optado por não inserir peso e altura
+                if not aluno[1] or not aluno[2]:
+                    print(
+                        f"\nAluno selecionado: {nome}."
+                        "\nPeso e/ou altura não cadastrados."
+                        "\nInforme os dados para continuar o cálculo"
+                    )
+                    #inserir o peso e altura
+                    while True:
+                        if continuar == 2:
+                            break
+                        elif continuar == 0:
+                            continue
+                        try:
+                            peso = float(input("\nDigite o peso (kg): ").strip().replace(",", "."))#Evitar erro de código por uso de vírgula ","
+                        except ValueError: #Segurança caso insira input inválido
+                            print("\nERRO: Digite apenas números.")
+                            continue
 
-                                if peso <= 0: #evitar valores negativos
-                                    print("\nERRO: O peso deve ser maior que zero")
-                                    continue
+                        if peso <= 0: #evitar valores negativos
+                            print("\nERRO: O peso deve ser maior que zero")
+                            continue
+                        if peso > 700: #Evitar valores superiores a 700Kg
+                            print("\nERRO: O peso não pode ser maior que 700 kg.")
+                            continue
 
-                                if peso > 700: #Evitar valores superiores a 700Kg
-                                    print("\nERRO: O peso não pode ser maior que 700 kg.")
-                                    continue
-                                break
-                            
-                            except ValueError: #Segurança caso insira input inválido
-                                print("\nERRO: Digite apenas números.")
-                                continue
-                        #Insert altura
-                        while True:
-                            try:
-                                altura = float(input("Digite a altura (m): ").strip().replace(",", "."))#Segurança caso utilize vírgula ","
+                        try:
+                            altura = float(input("Digite a altura (m): ").strip().replace(",", "."))#Segurança caso utilize vírgula ","
+                        except ValueError:#s
+                            print("\nERRO: Digite apenas números.")
+                            continue
 
-                                if altura <= 0:#Evitar valores negativos
-                                    print("\nERRO: A altura deve ser maior que zero")
-                                    continue
+                        if altura <= 0:#Evitar valores negativos
+                            print("\nERRO: A altura deve ser maior que zero")
+                            continue
 
-                                if altura > 3:#Evitar altura maior que 3 metros
-                                    print("\nERRO: A altura não pode ser maior que 3 metros.")
-                                    continue
-                                break
+                        if altura > 3:#Evitar altura maior que 3 metros
+                            print("\nERRO: A altura não pode ser maior que 3 metros.")
+                            continue
+                        break
 
-                            except ValueError:#s
-                                print("\nERRO: Digite apenas números.")
-                                continue
 
                     else:#Caso o cadastro do aluno ja possua peso e altura
 

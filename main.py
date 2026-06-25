@@ -10,7 +10,7 @@ from comandos.funcionalidades import consulta_imc
 from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat
 from interfaces.funcontinuar import exibir_submenuHome
 from interfaces.interface import exibir_menu
-
+from comandos.exportar import export_vendas
 
 #iniciar o programa
 iniciar_db()
@@ -93,6 +93,7 @@ while True:
         #não iniciada
 
     else:
+        export_vendas()
         print("ERRO: Operação Inválida")
     
     continuar = exibir_submenuHome() #-> Menu de Continuidade
