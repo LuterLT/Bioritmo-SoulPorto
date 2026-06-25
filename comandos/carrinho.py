@@ -8,13 +8,14 @@ import datetime
 
 def carrinho_venda():
     continuar = 1
+
+    carrinho = []
+
     while True:
         if continuar == 2:
             break
         elif continuar == 0:
             continuar = exibir_submenu("'carrinho de compra'")
-        
-        carrinho = []
 
         exibir_prod()
         try:
@@ -34,7 +35,7 @@ def carrinho_venda():
         conexao = abrir_conexao()
         cursor = conexao.cursor()
 
-        cursor.execute("SELECT nome, preco, qtde FROM prodserv WHERE id = %s AND ativo = 1", (id_venda,))
+        cursor.execute("SELECT nome, categoria, preco, qtde FROM prodserv WHERE id = %s AND ativo = 1", (id_venda,))
 
         resultado = cursor.fetchone()
 
@@ -42,13 +43,16 @@ def carrinho_venda():
         conexao.close()
 
         if not resultado:
-            print("ERROR: Id invalido! Esse livro não existe no sistema!")
+            print("ERROR: Id invalido! Esse produto / serviço não existe no sistema!")
             continue
             
-        nome_prodserv, preco_prodserv, estoque_real = resultado
+        nome_prodserv, categ_prodserv, preco_prodserv, estoque_real = resultado
 
         try:
-            qtd = int(input(f"Quantos do '{nome_prodserv}' você deseja adicionar ao carinho? Estoque disponivel: {estoque_real} \n"))
+            if categ_prodserv.lower() != "serviços":
+                qtd = int(input(f"Quantos do '{nome_prodserv}' você deseja adicionar ao carinho? Estoque disponivel: {estoque_real} \n"))
+            else:
+                qtd = 1
         except ValueError:
             print("ERROR: Quantidade invalido!")
             continue
@@ -64,18 +68,19 @@ def carrinho_venda():
             carrinho.append({
                 "id": id_venda,
                 "nome": nome_prodserv,
+                "categoria": categ_prodserv,
                 "preco": preco_prodserv,
                 "qtd": qtd,
                 "subtotal": qtd * preco_prodserv,
             })
 
-            print(f"-> {qtd} x '{nome_prodserv}' adicionado ao carrinho, cada um com valor de {preco_prodserv}.")
+            print(f"-> {qtd} x '{nome_prodserv}' adicionado ao carrinho, a unidade tendo o valor de {preco_prodserv}.")
     
         if len(carrinho) > 0:
             total_compra = sum(item['subtotal'] for item in carrinho)
-            print(f" ===== Fechamento do caixa ===== \n"
-                f"Total a pagar: R$ {total_compra:.2f}") # precisa arrumar
-            confirmar = input("Confirmar compra e pagamento? *(S/N)").lower().strip()
+            print(f"\n ===== Fechamento do caixa ===== \n"
+                f"Total a pagar: R$ {total_compra:.2f}")
+            confirmar = input("\nConfirmar compra e pagamento? *(S/N)\n").lower().strip()
 
 
             if confirmar == 's':
@@ -84,11 +89,12 @@ def carrinho_venda():
 
                 try:
                     for item in carrinho:
-                        cursor.execute("""
-                            UPDATE prodserv
-                            SET qtde = qtde - %s
-                            WHERE id = %s
-                        """, (item['qtd'], item['id']))
+                        if item['categoria'].lower() != "serviços":
+                            cursor.execute("""
+                                UPDATE prodserv
+                                SET qtde = qtde - %s
+                                WHERE id = %s
+                            """, (item['qtd'], item['id']))
                     
                         cursor.execute("""
                             INSERT INTO vendas (id_prodserv, horario, qtde, subtotal)
@@ -118,4 +124,4 @@ def carrinho_venda():
                         conexao.close()
 
             else:
-                print("Venda não finalizada!")
+                print("\nVenda não finalizada!\n")

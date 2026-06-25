@@ -38,9 +38,10 @@ def exibir_submenuHome(): #===========================================MENU CONTI
         print("\n! ERRO: Tipo de Dado Inserido Inválido !\nRetornando...")
         return 0
     if comando == 1:
+        print("\nVoltando ao Inicio...")
         return 1
     elif comando == 2:
-        print("\nVoltando ao Inicio...") 
+        # print("\nVoltando ao Inicio...") 
         return 2
     else:
         print("\n! ERRO: Comando Inexistente !\nRetornando...")
