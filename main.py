@@ -4,10 +4,10 @@ import mysql.connector
 from banco_dados import iniciar_db, abrir_conexao
 from comandos.checkin import checkin
 from comandos.carrinho import carrinho_venda
-# from comandos.consultas import consulta_imc
+from comandos.funcionalidades import consulta_imc
 
 # importação dos submenus de cada função
-from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta
+from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat
 from interfaces.funcontinuar import exibir_submenuHome
 from interfaces.interface import exibir_menu
 
@@ -62,7 +62,7 @@ while True:
     
     elif menu == 3:
         print("\n-----Vendas-----\n")
-        carrinho_venda() #iniciado
+        carrinho_venda() # em alteração
 
     elif menu == 4:
         print("\n-----Repor Estoque-----\n")
@@ -70,7 +70,7 @@ while True:
     
     elif menu == 5:
         print("\n-----Listar Informações-----\n")
-        #   submenu_listar()
+        submenu_listar()
 
     elif menu == 6:
         print("\n-----Consulta-----\n")
@@ -78,11 +78,11 @@ while True:
 
     elif menu == 7:
         print("\n-----Ativar/Desativar Cadastros-----")
-        # submenu_atv_dst()
+        submenu_atv_inat()
 
     elif menu == 8:
         print("\n-----Calcular IMC-----")
-        # consulta_imc()
+        consulta_imc()
     
     elif menu == 9:
         print("\n-----Controle Financeiro-----\n")   

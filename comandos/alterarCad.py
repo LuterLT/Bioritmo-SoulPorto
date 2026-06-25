@@ -3,6 +3,7 @@ import datetime
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_planos, exibir_users, exibir_prod
 from interfaces.funcontinuar import exibir_submenu
+from comandos.funcionalidades import validar_email
 
 
 
@@ -55,8 +56,12 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
                 
                 novo_nome= input("\nDigite o seu nome completo: ").strip() or resultado[1]
                 novo_email= input("Digite o seu email: ").strip() or resultado[2]
+                if not validar_email(novo_email):
+                    print("\nERRO: Email Inválido")
+                    continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+                    continue
 
-                novo_peso_str= input("Digite o seu peso (quilos): ").strip()
+                novo_peso_str= input("Digite o seu peso (quilos): ").strip().replace(",", ".")
                 try: 
                     novo_peso = float(novo_peso_str) if novo_peso_str else resultado[3]
                 except ValueError:
@@ -64,7 +69,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
                     continuar = exibir_submenu(f"de Alterar o Cadastro do Aluno '{resultado[1]}'")
                     continue
 
-                nova_altura_str= input("Digite a sua altura (metros): ").strip()
+                nova_altura_str= input("Digite a sua altura (metros): ").strip().replace(",", ".")
                 try:
                     nova_altura = float(nova_altura_str) if nova_altura_str else resultado[4]
                 except ValueError:
@@ -155,7 +160,7 @@ def alt_cad_produtos():
                 # nova categoria
                 nova_categoria = input("Digite a nova categoria: ").strip() or produto[2]
                 # novo preço
-                novo_preco_str = input("Digite o novo preço (R$): ").strip()
+                novo_preco_str = input("Digite o novo preço (R$): ").strip().replace(",", ".")
 
                 try:
                     novo_preco = float(novo_preco_str) if novo_preco_str else produto[3]

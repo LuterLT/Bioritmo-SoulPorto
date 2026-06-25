@@ -3,7 +3,9 @@ from comandos.listagem import listagem_geral, listagem_alunos, listagem_produtos
 from comandos.cadastro import cad_aluno, cad_produtos, cad_planos
 from comandos.alterarCad import alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
 from comandos.estoque import repor_est, repor_est_lote, red_est
+from comandos.atv_inat import aluno_atv_inat, prodserv__atv_inat, plano_atv_inat
 from interfaces.funcontinuar import exibir_submenu
+from interfaces.interface import exibir_prod
 
 
 def submenu_cad(): #===============================================EXIBE SUBMENU DE CADASTRO===
@@ -89,7 +91,35 @@ def submenu_est(): #===============================================EXIBE SUBMENU
             repor_est()
         elif comando == 2:
             print("\n- Repor Estoque em Lote -\n")
-            repor_est_lote()
+            continuar = 1
+            while True:
+                if continuar == 2:
+                    break
+                elif continuar == 0:
+                    continuar = exibir_submenu("'Repor Estoque em Lote'")
+                    continue
+                try:
+                    qtde_rep = int(input("\nQual a quantidade recebida para CADA produto do lote? "))
+                except:
+                    print("\nERRO: A quantidade deve ser um número inteiro!")
+                    continuar = 0
+                    continue
+                if qtde_rep <= 0:
+                    print("ERRO: A quantidade deve ser um número maior que 0!")
+                    continuar = 0
+                    continue
+                print("\nProdutos Disponíveis:\n")
+                exibir_prod()
+                entrada_ids = input("\nDigite os [IDs] dos produtos separados por vírgula: ")
+                try:
+                    lista_ids = [int(numero.strip()) for numero in entrada_ids.split(',')]
+                except:
+                    print("\nERRO: Os [IDs] devem ser em números inteiros!")
+                    continuar = 0
+                    continue
+                repor_est_lote(qtde_rep, *lista_ids)
+                continuar = 0
+                continue
         elif comando == 3:
             print("\n- Reduzir Estoque -\n")
             red_est()
@@ -156,7 +186,7 @@ def submenu_listar():
             " [0] - Sair de listagem\n",)
         
         try:
-            listar = int(input("Listagem desejada: "))
+            listar = int(input("\nListagem desejada: "))
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
             return
@@ -174,3 +204,66 @@ def submenu_listar():
         else:
             print("Opção inválida, selecione uma opção válida")
             continuar = exibir_submenu("'escolher tipo de listagem'")
+
+
+def submenu_atv_inat():
+    '''
+    Essa def mostrará os tipos de cadastro (alunos, prods/serv e planos) para ativar/desativar
+    '''
+    continuar = 1
+    while True:
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continuar = exibir_submenu("'ativar/desativar cadastro'")
+        
+        print("Qual cadastro deseja ativar/desativar?\n",
+            " [1] - Aluno\n",
+            " [2] - Produtos / Serviços\n",
+            " [3] - Planos\n",
+            " [0] - Sair do submenu\n"
+        )
+
+        try:
+            listar = int(input("\nCadastro a ser ativado/desativado: "))
+        except ValueError:
+            print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
+            return
+
+        if listar == 0:
+            return
+        elif listar == 1:
+            pass
+            aluno_atv_inat()
+        elif listar == 2:
+            pass
+            prodserv__atv_inat()
+        elif listar == 3:
+            pass
+            plano_atv_inat()
+        else:
+            print("Opção inválida, selecione uma opção válida")
+            continuar = exibir_submenu("'ativar/desativar cadastro'")
+
+
+def submenu_exportar():
+    while True:
+        print("""
+-----------------Lista de Comandos-----------------
+[1] - Exportar uma QUANTIDADE de Vendas Específicas 
+[2] - Exportar TODAS as Vendas Registradas
+[3] - Voltar
+---------------------------------------------------
+""")
+        try:
+            escolha = int(input("Escolha uma das opções acima: "))
+        except ValueError:
+            print("\nERRO: Você digitou um dado Incorreto, Esse Campo Aceita Apenas Números Inteiros")
+            input("Aperte ENTER para Continuar")
+            continue
+        if escolha<1 or escolha>3:
+            print("\nERRO: Número de Comando Inválido, Escolha um dos Números Contidos no Menu")
+            input("Aperte ENTER para Continuar")
+            continue
+        
+        return escolha

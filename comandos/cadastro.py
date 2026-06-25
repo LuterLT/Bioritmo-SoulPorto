@@ -27,9 +27,8 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
             continuar = exibir_submenu("'Cadastrar Novo Aluno'")
             continue
 
-        novo_peso_str = input("Digite o peso (Kg) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
-        nova_altura_str = input("Digite a altura (m) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
         try:
+            novo_peso_str = input("Digite o peso (Kg) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
             novo_peso = float(novo_peso_str) if novo_peso_str else 0.0
             if novo_peso > 700 or novo_peso < 0:
                 print("\nERRO: Peso Inválido")
@@ -40,6 +39,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
             continuar = exibir_submenu("'Cadastrar Novo Aluno'")
             continue
         try:  
+            nova_altura_str = input("Digite a altura (m) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
             nova_altura = float(nova_altura_str) if nova_altura_str else 0.0
             if nova_altura > 3.0 or nova_altura < 0:
                 print("\nERRO: Altura Inválida")
@@ -89,7 +89,6 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
                 conexao.commit()
 
                 print(f"Aluno {novo_nome} cadastrado com SUCESSO!\n")
-
 
             except mysql.connector.Error as erro:
                 conexao.rollback()

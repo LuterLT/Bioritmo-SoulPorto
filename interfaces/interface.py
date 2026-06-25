@@ -26,20 +26,31 @@ def exibir_users(): #=============================================EXIBIR USUÁRI
         conexao = abrir_conexao()
         cursor = conexao.cursor()
 
+        # faz a busca na tabela aluno
         cursor.execute("""
-            SELECT aluno.id, aluno.nome, aluno.email, planos.nome, aluno.aulas_disp, aluno.peso, aluno.altura
+            SELECT aluno.id,  aluno.nome, aluno.email, aluno.aulas_disp, planos.nome, aluno.peso, aluno.altura
             FROM aluno
             INNER JOIN planos ON aluno.id_plano = planos.id
             WHERE aluno.ativo = 1
         """)
+
         resultado = cursor.fetchall()
-        for user in resultado:
-            peso_aluno = "Não Informado" if not user[5] else str(user[5]) + " Kg"
-            altura_aluno = "Não Informado" if not user[6] else str(user[6]) + " m"
-            print(f"-> [{user[0]}] {user[1]} | E-mail: {user[2]} | Plano: {user[3]} | Aulas Disponíveis: {user[4]} | Peso: {peso_aluno} | Altura: {altura_aluno}")
-    
+        
+        if len(resultado) == 0:
+            print("Nenhum resultado encontrado.")
+        else:
+            print("\nAlunos:")
+            for aluno in resultado:
+                larg_nome = max(len(aluno[1]) for aluno in resultado)
+                larg_email = max(len(aluno[2]) for aluno in resultado)
+                larg_pln = max(len(aluno[4]) for aluno in resultado)
+                peso_aluno = "-" if not aluno[5] else aluno[5]
+                altura_aluno = "-" if not aluno[6] else aluno[6]
+                print(f" -> [{aluno[0]:<{2}}] {aluno[1]:<{larg_nome}} | Email: {aluno[2]:<{larg_email}} | Plano: {aluno[4]:<{larg_pln}} | Aulas Disponiveis: {aluno[3]:<3} | Peso: {peso_aluno:<5} | Altura: {altura_aluno:<5}")
+            print("\n")
+
     except mysql.connector.Error as erro:
-        print(f"\nERRO: Ocorreu um erro no banco, {erro}")
+        print(f"\nERRO: Ocorreu um erro no banco: {erro}")
         input("Aperte ENTER para Continuar")
     
     finally:
@@ -56,19 +67,29 @@ def exibir_prod(): #=============================================EXIBIR PRODUTOS
         conexao = abrir_conexao()
         cursor = conexao.cursor()
         
+        # faz a busca na tabela prodserv
         cursor.execute("""
-            SELECT id, nome, qtde, categoria, preco
+            SELECT id, nome, categoria, preco, qtde
             FROM prodserv
-            WHERE ativo = 1 
+            WHERE prodserv.ativo = 1
         """)
+
         resultado = cursor.fetchall()
-            
-        for produto in resultado:
-            print(f"-> [{produto[0]}] {produto[1]} | Quantidade em Estoque: {produto[2]} | Categoria: {produto[3]} | Preço: R$ {produto[4]:.2f}")
+
+        if len(resultado) == 0:
+            print("Nenhum resultado encontrado.")
+        else:
+            print("\nProdutos / Serviços:")
+            for prodserv in resultado:
+                larg_nome = max(len(prodserv[1]) for prodserv in resultado)
+                larg_categ = max(len(prodserv[2]) for prodserv in resultado)
+                #larg_prc = max(len(plano[2]) for plano in resultado)
+                print(f" -> [{prodserv[0]}] {prodserv[1]:<{larg_nome}} | Categoria: {prodserv[2]:<{larg_categ}} | Preço: {prodserv[3]:<6} | Quantidade em estoque: {prodserv[4]}")
+            print("\n")
 
     except mysql.connector.Error as erro:
-        print(f"\nERRO: Ocorreu um erro no banco, {erro}")
-        input("Aperte ENTER para Continuar")
+        print(f"ERRO DE BANCO DE DADOS: {erro}")
+        input("Aperte ENTER para continuar")
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
@@ -83,22 +104,32 @@ def exibir_planos(): #=============================================EXIBIR PLANOS
         conexao = abrir_conexao()
         cursor = conexao.cursor()
 
+        # faz a busca na tabela planos
         cursor.execute("""
             SELECT id, nome, preco, qtde_aulas
             FROM planos
             WHERE ativo = 1
         """)
+
         resultado = cursor.fetchall()
         
-        for plano in resultado:
-            print(f"-> [{plano[0]}] {plano[1]} | Preço: R$ {plano[2]} | Quantidade de Aulas/Mês: {plano[3]}")
+        if len(resultado) == 0:
+            print("Nenhum resultado encontrado.")
+        else:
+            print("\nPlanos:")
+            for plano in resultado:
+                larg_nome = max(len(plano[1]) for plano in resultado)
+                print(f" -> [{plano[0]}] {plano[1]:<{larg_nome}} | Preço: {plano[2]:<6} | Aulas permitidas: {plano[3]}")
+            print("\n")
+
     except mysql.connector.Error as erro:
-        print(f"\nERRO: Ocorreu um erro no banco, {erro}")
-        input("Aperte ENTER para Continuar")
+        print(f"ERRO DE BANCO DE DADOS: {erro}")
+        input("Aperte ENTER para continuar")
     finally:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
+
 
 
 def exibir_checkin(limite): #======================================EXIBIR CHECK-INS RECENTES=

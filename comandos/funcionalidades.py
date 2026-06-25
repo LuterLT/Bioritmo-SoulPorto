@@ -1,86 +1,240 @@
+import mysql.connector
+from banco_dados import abrir_conexao
 import re
 
+#DEF responsavel pela consulta do imc dos alunos
 def consulta_imc():
     """
     Calcula o IMC do usuário.
     """
     while True:
+        try:
+            conexao = abrir_conexao()
+            cursor = conexao.cursor()
 
-        #peso
-        while True:
-            try:
-                peso = float(
-                    input("Digite seu peso (kg): ").strip().replace(",", ".")
-                )
+            print("\n========= ALUNOS CADASTRADOS =========")#Busca no db os alunos cadastrados
 
-                if peso <=0:
-                    print("\nERRO: o peso deve ser maior que zero!")
+            cursor.execute("""
+                SELECT id, nome
+                FROM aluno
+                WHERE ativo = 1
+            """)
+
+            alunos = cursor.fetchall()
+
+            if alunos:
+                for aluno in alunos:
+                    print(f"{aluno[0]} - {aluno[1]}")
+            else:
+                print("Nenhum aluno cadastrado.")
+
+            print("\n0 - Continuar sem aluno cadastrado")
+
+            while True:
+                try:
+                    id_aluno = int(  #Input para inserir o ID do aluno ou pressionar 0 para seguir sem cadastro
+                        input(
+                            "\nDigite o ID do aluno ou 0 para continuar sem cadastro: "
+                        )
+                    )
+                except ValueError:#Segurança caso valor inválido
+                    print("\nERRO: Digite apenas números inteiros.")
+
+                if id_aluno == 0: #calcular IMC de aluno sem cadastro
+
+                    #inserir peso
+                    while True:
+                        try:
+                            peso = float(
+                                input("Digite seu peso (kg): ")
+                                .strip()
+                                .replace(",", ".") #converte a vírgula "," em ponto "." para que o código não dê erro
+                            )
+                            #Limitações de peso dos alunos (Ninguem é tao grande assim!)
+                            if peso <= 0:
+                                print("\nERRO: O peso deve ser maior que zero!")
+                                continue
+
+                            if peso > 700:
+                                print("\nERRO: O peso não pode ser maior que 700kg")
+                                continue
+
+                            break
+
+                        except ValueError: #Usuário envia dados não aceitaveis 
+                            print(
+                                "\nERRO: Digite apenas números para o cálculo de IMC"
+                            )
+
+                    #inserir altura
+                    while True:
+                        try:
+                            altura = float( #input para inserir altura
+                                input("Digite sua altura(m): ")
+                                .strip()
+                                .replace(",", ".")
+                            )
+                            # verificação altura para que não seja possível dados negativos
+                            if altura <= 0:
+                                print(
+                                    "\nERRO: A altura deve ser maior que zero"
+                                )
+                                continue
+                            #verificação de altura para que não seja maior que 3 metros de altura! 
+                            if altura > 3:
+                                print(
+                                    "\nERRO: A altura não pode ser maior que 3 metros."
+                                )
+                                continue
+
+                            break
+
+                        except ValueError: #Segurança de codigo caso o usuário insira um dado não aceitavel
+                            print(
+                                "\nERRO: Digite apenas números para o cálculo de IMC"
+                            )
+
+                        break
+                    #aqui tem que realizar o cálculo com as variáveis anteriores e já imprimir na tela
+                    
+                
+                #busca as informações do aluno no bd para ser apresentado no terminal
+                cursor.execute(""" 
+                    SELECT nome, peso, altura
+                    FROM aluno
+                    WHERE id = %s
+                    AND ativo = 1
+                """, (id_aluno,))
+
+                aluno = cursor.fetchone()
+                #caso a pesquisa não corresponda a um resultado do bd
+                if aluno is None:
+                    print("\nERRO: Aluno não encontrado.")
                     continue
-                break
-
-            except ValueError:
-                print("\nERRO: Digite apenas número para o cálculo de IMC")
-
-        #altura
-        while True:
-            try:
-                altura = float(
-                    input("Digite sua altura(m): ").strip().replace(",", ".")
-                )
-
-                if altura <= 0:
-                    print("\nERRO: A altura deve ser maior que zero")
-                    continue
-
-                break
             
-            except ValueError:
-                print("\nERRO: Digiste apenas números para o cálculo de IMC")
+                nome = aluno[0]
+                #if caso o aluno selecionado tenha optado por não inserir peso e altura
+                if not aluno[1] or aluno[2]:
+                    print(
+                        f"\nAluno selecionado: {nome}."
+                        "\nPeso e/ou altura não cadastrados."
+                        "\nInforme os dados para continuar o cálculo"
+                    )
+                    #Insert peso
+                    while True:
+                        try:
+                            peso = float(input("\nDigite o peso (kg): ").strip().replace(",", "."))#Evitar erro de código por uso de vírgula ","
 
-        #cálculo
-        imc = peso / (altura ** 2)
+                            if peso <= 0: #evitar valores negativos
+                                print("\nERRO: O peso deve ser maior que zero")
+                                continue
 
-        #classificação/resultado
+                            if peso > 700: #Evitar valores superiores a 700Kg
+                                print("\nERRO: O peso não pode ser maior que 700 kg.")
+                                continue
+                            break
+                        
+                        except ValueError: #Segurança caso insira input inválido
+                            print("\nERRO: Digite apenas números.")
+                            continue
+                    #Insert altura
+                    while True:
+                        try:
+                            altura = float(input("Digite a altura (m): ").strip().replace(",", "."))#Segurança caso utilize vírgula ","
+
+                            if altura <= 0:#Evitar valores negativos
+                                print("\nERRO: A altura deve ser maior que zero")
+                                continue
+
+                            if altura > 3:#Evitar altura maior que 3 metros
+                                print("\nERRO: A altura não pode ser maior que 3 metros.")
+                                continue
+                            break
+
+                        except ValueError:#s
+                            print("\nERRO: Digite apenas números.")
+                            continue
+
+                else:#Caso o cadastro do aluno ja possua peso e altura
+
+                    peso = float(aluno[1])
+                    altura = float(aluno[2])
+                    
+                    print(f"\nAluno selecionado: {nome}")
+
+                break
+            #fim do while totalzão que pega desde o id do aluno até a inserção dos valores nas variáveis
+
+            
+        except mysql.connector.Error as erro:
+            print(f"\nArquivo-funcionalidade Linha-170\nERRO: Falha no Banco de Dados, {erro}")
+            continue
+        finally:
+            if 'conexao' in locals() and conexao.is_connected():
+                cursor.close()
+                conexao.close()
+
+        # cálculo IMC
+        imc = (peso / (altura ** 2))
+
+        # classificação/resultado
         if imc < 18.5:
             classificacao = "Abaixo do peso"
-            dica = ("Procure manter uma alimentação equilibrada e, se possível, consulte um nutricionista para avaliar suas necessidades.")
+            dica = (
+                "Procure manter uma alimentação equilibrada e, se possível, "
+                "consulte um nutricionista para avaliar suas necessidades."
+            )
 
         elif imc < 25:
             classificacao = "Peso normal"
-            dica = ("Parabéns! Continue mantendo hábitos saudáveis, alimentação equilibrada e prática regular de exercícios.")
+            dica = (
+                "Parabéns! Continue mantendo hábitos saudáveis, "
+                "alimentação equilibrada e prática regular de exercícios."
+            )
 
         elif imc < 30:
             classificacao = "Sobrepeso"
-            dica = ("Considere aumentar a prática de atividade físicas e adotar uma alimentação mais equilibrada.")
+            dica = (
+                "Considere aumentar a prática de atividades físicas e "
+                "adotar uma alimentação mais equilibrada."
+            )
 
         elif imc < 35:
             classificacao = "Obesidade Grau I"
-            dica = ("É recomendável buscar orientação médica e nutricional para reduzir riscos à saúde.")
+            dica = (
+                "É recomendável buscar orientação médica e nutricional "
+                "para reduzir riscos à saúde."
+            )
 
         elif imc < 40:
             classificacao = "Obesidade Grau II"
-            dica = ("Procure acompanhamento profissional para desenvolver um plano seguro de perda de peso.")
+            dica = (
+                "Procure acompanhamento profissional para desenvolver "
+                "um plano seguro de perda de peso."
+            )
 
         else:
             classificacao = "Obesidade Grau III"
-            dica = ("É importante procurar orientação médica especializada para avaliação e acompanhamento.")
+            dica = (
+                "É importante procurar orientação médica especializada "
+                "para avaliação e acompanhamento."
+            )
 
-        print("\n=======RESULTADO=======")
+        print("\n======= RESULTADO =======") #devolve o resultado de IMC para o usuário
         print(f"Peso: {peso:.2f} kg")
         print(f"Altura: {altura:.2f} m")
         print(f"IMC: {imc:.2f}")
         print(f"Classificação: {classificacao}")
 
-        print("\n Dica:")
+        print("\nDica:")
         print(dica)
 
-        while True:
+        while True:#Sugerir uma nova consulta
             opcao = input(
-                "\n Deseja realizar uma nova consulta? (s/n)"
+                "\nDeseja realizar uma nova consulta? (s/n): "
             ).strip().lower()
 
             if opcao == "s":
-                print()
                 break
 
             elif opcao == "n":
@@ -91,8 +245,10 @@ def consulta_imc():
                 print("ERRO: Digite apenas s ou n.")
 
 
-def validar_email(email):
-    
+def validar_email(email):#def responsável pela validação de email (Verifica o formato do email) 
+    '''
+    Essa função vai receber o email digitar e vai verificar se ela segue o mesmo padrão do regex
+    '''
     padrao = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     if re.fullmatch(padrao, email):
         return email

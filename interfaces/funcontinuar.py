@@ -11,15 +11,15 @@ def exibir_submenu(texto): #===========================================MENU CONT
     try:
         comando = int(input("Digite um dos numeros acima: "))
     except ValueError:
-        print("\n! ERRO: Tipo de Dado Inserido Inválido !\nRetornando...")
+        print("\n! ERRO: Tipo de Dado Inserido Inválido !\nRetornando...\n\n--------------------")
         return 0
     if comando == 1:
         return 1
     elif comando == 2:
-        print("\nVoltando...") 
+        print("\nVoltando...\n\n--------------------") 
         return 2
     else:
-        print("\n! ERRO: Comando Inexistente !\nRetornando...")
+        print("\n! ERRO: Comando Inexistente !\nRetornando...\n\n--------------------")
         return 0
 
 def exibir_submenuHome(): #===========================================MENU CONTINUIDADE INICIO
@@ -29,8 +29,8 @@ def exibir_submenuHome(): #===========================================MENU CONTI
     
     Importante: antes do While, a variavel que vai receber esse resultado deve ser inicilizar com 1 e deve ter comandos Ifs para tratar o resultado retornado.
     '''
-    print("------------Deseja Voltar ao Início ?--------------")
-    print(f"[1] - Voltar ao Início")
+    print("------------Deseja Voltar ao Menu ?--------------")
+    print(f"[1] - Voltar ao Menu")
     print("[2] - Finalizar Programa")
     try:
         comando = int(input("Digite um dos numeros acima: "))
@@ -46,3 +46,4 @@ def exibir_submenuHome(): #===========================================MENU CONTI
     else:
         print("\n! ERRO: Comando Inexistente !\nRetornando...")
         return 0       
+
