@@ -1,19 +1,21 @@
 import mysql.connector
 from banco_dados import abrir_conexao
 
+
 def exibir_menu():  #=============================================EXIBIR MENU===========
     print("=========== BIO RITMO SoulPorto ===========\n",
-          "1 - Check In\n", #registrar o check-in de um aluno específico
-          "2 - Cadastros/Alterações Cadastrais\n", #cadastro e atualização de alunos e/ou produtos
-          "3 - Vendas\n", #registrar vendas de produtos/serviços
-          "4 - Repor Estoque\n", #repor estoque de produtos (unitário e lote)
-          "5 - Consulta\n", #busca alunos, planos e produtos/serviços
-          "6 - Calcular IMC\n",
-          "7 - Controle Financeiro\n", #altera preço de planos/produtos, aplica promoções, exibe NF, painel BI
-          "8 - Exportar Relatórios\n", #exporta os relatórios de check-in e de vendas
-          "0 - Fechar o Sistema\n"
+          "1  - Check In\n", #registrar o check-in de um aluno específico
+          "2  - Cadastros/Alterações Cadastrais\n", #cadastro e atualização de alunos e/ou produtos
+          "3  - Vendas\n", #registrar vendas de produtos/serviços
+          "4  - Alterar Estoque\n", #repor estoque de produtos (unitário e lote)
+          "5  - Listar cadastros\n",
+          "6  - Consulta\n", #busca alunos, planos e produtos/serviços
+          "7  - Ativar/Desativar cadastros\n", #ativa/desativa cadastros
+          "8  - Calcular IMC\n", # caucula imc de um aluno
+          "9  - Controle Financeiro\n", #altera preço de planos/produtos, aplica promoções, exibe NF, painel BI
+          "10 - Exportar Relatórios\n", #exporta os relatórios de check-in e de vendas
+          "0  - Fechar o Sistema\n"
           )
-
 
 
 def exibir_users(): #=============================================EXIBIR USUÁRIOS===========
@@ -25,14 +27,16 @@ def exibir_users(): #=============================================EXIBIR USUÁRI
         cursor = conexao.cursor()
 
         cursor.execute("""
-            SELECT aluno.id, aluno.nome, aluno.email, planos.nome, aluno.aulas_disp
+            SELECT aluno.id, aluno.nome, aluno.email, planos.nome, aluno.aulas_disp, aluno.peso, aluno.altura
             FROM aluno
             INNER JOIN planos ON aluno.id_plano = planos.id
             WHERE aluno.ativo = 1
         """)
         resultado = cursor.fetchall()
         for user in resultado:
-            print(f"-> [{user[0]}] {user[1]} | E-mail: {user[2]} | Plano: {user[3]} | Aulas Disponíveis: {user[4]}")
+            peso_aluno = "Não Informado" if not user[5] else str(user[5]) + " Kg"
+            altura_aluno = "Não Informado" if not user[6] else str(user[6]) + " m"
+            print(f"-> [{user[0]}] {user[1]} | E-mail: {user[2]} | Plano: {user[3]} | Aulas Disponíveis: {user[4]} | Peso: {peso_aluno} | Altura: {altura_aluno}")
     
     except mysql.connector.Error as erro:
         print(f"\nERRO: Ocorreu um erro no banco, {erro}")
@@ -42,6 +46,7 @@ def exibir_users(): #=============================================EXIBIR USUÁRI
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
+
 
 def exibir_prod(): #=============================================EXIBIR PRODUTOS===========
     '''
@@ -54,12 +59,13 @@ def exibir_prod(): #=============================================EXIBIR PRODUTOS
         cursor.execute("""
             SELECT id, nome, qtde, categoria, preco
             FROM prodserv
-            WHERE ativo = 1
+            WHERE ativo = 1 
         """)
         resultado = cursor.fetchall()
-        
+            
         for produto in resultado:
             print(f"-> [{produto[0]}] {produto[1]} | Quantidade em Estoque: {produto[2]} | Categoria: {produto[3]} | Preço: R$ {produto[4]:.2f}")
+
     except mysql.connector.Error as erro:
         print(f"\nERRO: Ocorreu um erro no banco, {erro}")
         input("Aperte ENTER para Continuar")
@@ -85,7 +91,7 @@ def exibir_planos(): #=============================================EXIBIR PLANOS
         resultado = cursor.fetchall()
         
         for plano in resultado:
-            print(f"-> [{plano[0]}] {plano[1]} | Preço: {plano[2]} | Quantidade de Aulas/Mês: {plano[3]}")
+            print(f"-> [{plano[0]}] {plano[1]} | Preço: R$ {plano[2]} | Quantidade de Aulas/Mês: {plano[3]}")
     except mysql.connector.Error as erro:
         print(f"\nERRO: Ocorreu um erro no banco, {erro}")
         input("Aperte ENTER para Continuar")
@@ -128,10 +134,3 @@ def exibir_checkin(limite): #======================================EXIBIR CHECK-
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
-
-
-
-
-
-
-    

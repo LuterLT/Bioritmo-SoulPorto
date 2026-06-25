@@ -1,6 +1,9 @@
 from comandos.consultas import consulta_geral, consulta_alunos, consulta_produtos, consulta_planos
-from comandos.cadastro import cad_aluno, cad_produtos, cad_planos, alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
-from comandos.estoque import repor_est, repor_est_lote
+from comandos.listagem import listagem_geral, listagem_alunos, listagem_produtos, listagem_planos
+from comandos.cadastro import cad_aluno, cad_produtos, cad_planos
+from comandos.alterarCad import alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
+from comandos.estoque import repor_est, repor_est_lote, red_est
+from interfaces.funcontinuar import exibir_submenu
 
 
 def submenu_cad(): #===============================================EXIBE SUBMENU DE CADASTRO===
@@ -22,7 +25,7 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
         elif comando == 1: #================== REALIZAR NOVO CADASTRO
             while True:
                 try:
-                    print("\n1 - Cadastro de Alunos\n2 - Cadastro de Produtos\n3 - Cadastro de Planos\n0 - Voltar")
+                    print("\n1 - Cadastro de Alunos\n2 - Cadastro de Produtos/Serviços\n3 - Cadastro de Planos\n0 - Voltar")
                     subcomando  = int(input("\nQual tipo de cadastro deseja realizar? "))
                 except ValueError:
                     print("ERRO: Digite apenas números inteiros!")
@@ -33,7 +36,7 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
                     print("\n- Cadastro de Alunos -\n")
                     cad_aluno()
                 elif subcomando == 2:
-                    print("\n- Cadastro de Produtos -\n")
+                    print("\n- Cadastro de Produtos / Serviços -\n")
                     cad_produtos()
                 elif subcomando == 3:
                     print("\n- Cadastro de Planos -\n")
@@ -56,7 +59,7 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
                     print("\n- Alterar Cadastro de Alunos -\n")
                     alt_cad_aluno()
                 elif subcomando == 2:
-                    print("\n- Alterar Cadastro de Produtos -\n")
+                    print("\n- Alterar Cadastro de Produtos/Serviços -\n")
                     alt_cad_produtos()
                 elif subcomando == 3:
                     print("\n- Alterar Cadastro de Planos -\n")
@@ -73,7 +76,7 @@ def submenu_est(): #===============================================EXIBE SUBMENU
     
     while True:
         try:
-            print("\n1 - Repor Estoque de 1 item\n2 - Repor Estoque em Lote\n0 - Voltar")
+            print("\n1 - Repor Estoque de 1 item\n2 - Repor Estoque em Lote\n3 - Reduzir Estoque\n0 - Voltar")
             comando = int(input("\nQual opção deseja acessar? "))
         except ValueError:
             print("ERRO: Digite apenas números inteiros!")
@@ -87,6 +90,9 @@ def submenu_est(): #===============================================EXIBE SUBMENU
         elif comando == 2:
             print("\n- Repor Estoque em Lote -\n")
             repor_est_lote()
+        elif comando == 3:
+            print("\n- Reduzir Estoque -\n")
+            red_est()
         else:
             print("ERRO: Operação Inválida")
             continue
@@ -95,28 +101,76 @@ def submenu_est(): #===============================================EXIBE SUBMENU
 
 def submenu_consulta(): #===============================================EXIBE SUBMENU DE ESTOQUE===
     ''' 
-    Essa def mostra as opções que o usuário terá para repor estoque (itens individuais ou)
+    Essa def mostra as opções que o usuário terá para fazer uma buscar
     '''
-    print(" ----- Consultas ----- \n")
-    print("Qual tipo de consulta desejado?\n",
-          " [0] - Consulta geral\n",
-          " [1] - Consulta de alunos\n",
-          " [2] - Consulta de produtos/serviços\n",
-          " [3] - Consulta de planos\n",)
-    
-    try:
-        consulta = int(input("Consulta desejada: "))
-    except ValueError:
-        print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
-        return
+    continuar = 1
+    while True:
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continuar = exibir_submenu("'escolher consulta'")
 
-    if consulta == 0:
-        consulta_geral()
-    elif consulta == 1:
-        consulta_alunos()
-    elif consulta == 2:
-        consulta_produtos()
-    elif consulta == 3:
-        consulta_planos()
-    else:
-        print("Opção inválida, selecione uma opção válida")
+        print("Qual tipo de consulta desejado?\n",
+            " [1] - Consulta geral\n",
+            " [2] - Consulta de alunos\n",
+            " [3] - Consulta de produtos/serviços\n",
+            " [4] - Consulta de planos\n",
+            " [0] - Sair de consultas\n",)
+        
+        try:
+            consulta = int(input("Consulta desejada: "))
+        except ValueError:
+            print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
+            return
+
+        if consulta == 0:
+            return
+        elif consulta == 1:
+            consulta_geral()
+        elif consulta == 2:
+            consulta_alunos()
+        elif consulta == 3:
+            consulta_produtos()
+        elif consulta == 4:
+            consulta_planos()
+        else:
+            print("Opção inválida, selecione uma opção válida")
+            continuar = exibir_submenu("'escolhendo tipo de consulta'")
+
+def submenu_listar():
+    ''' 
+    Essa def mostra as opções que o usuário terá para serem listadas
+    '''
+    continuar = 1
+    while True:
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continuar = exibir_submenu("'escolher listagem'")
+
+        print("Qual tipo de listagem desejado?\n",
+            " [1] - Listagem geral\n",
+            " [2] - Listagem de alunos\n",
+            " [3] - Listagem de produtos/serviços\n",
+            " [4] - Listagem de planos\n",
+            " [0] - Sair de listagem\n",)
+        
+        try:
+            listar = int(input("Listagem desejada: "))
+        except ValueError:
+            print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
+            return
+
+        if listar == 0:
+            return
+        elif listar == 1:
+            listagem_geral()
+        elif listar == 2:
+            listagem_alunos()
+        elif listar == 3:
+            listagem_produtos()
+        elif listar == 4:
+            listagem_planos()
+        else:
+            print("Opção inválida, selecione uma opção válida")
+            continuar = exibir_submenu("'escolher tipo de listagem'")

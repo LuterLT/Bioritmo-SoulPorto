@@ -78,7 +78,7 @@ def iniciar_db():
                 ("Aula Avulsa", "Serviços", 50, 1),
                 ("Água Proteica", "Bebidas", 12.99, 50),
                 ("Barrinha de Cereal", "Alimentos", 15.75, 40),
-                ("Lacinho para Cabelo", "Itens Aula", 3.50, 30)
+                ("Lacinho para Cabelo", "Equipamentos", 3.50, 30)
             ]
 
             cursor.executemany("""
@@ -92,9 +92,9 @@ def iniciar_db():
             planos_iniciais = [
                 ("Experimental", 0, 1),
                 ("Bronze", 49.99, 5),
-                ("Prata", 74.99, 10),
+                ("Prata", 84.99, 10),
                 ("Ouro", 99.99, 15),
-                ("Diamante", 129.99, 20)
+                ("Diamante", 114.99, 20)
             ]
             cursor.executemany("""
                 INSERT INTO planos (nome, preco, qtde_aulas)
@@ -107,7 +107,7 @@ def iniciar_db():
             alunos_iniciais = [
                 ("Davi Hiluany", "davi.hiluany@gmail.com", 65.00, 1.65, 1, 1),
                 ("Gabriella Iglesias", "gabriella.iglesias@gmail.com", 65.00, 1.65, 1, 1),
-                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 65.00, 1.85, 1, 1),
+                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 65.00, 2.27, 1, 1),
                 ("João Pedro de França", "joao.defranca@gmail.com", 65.00, 1.65, 1, 1),
                 ("Lucas Imparato", "lucas.imparato@gmail.com", 65.00, 1.65, 1, 1),
             ]
