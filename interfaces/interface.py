@@ -46,7 +46,7 @@ def exibir_users(): #=============================================EXIBIR USUÁRI
                 larg_pln = max(len(aluno[4]) for aluno in resultado)
                 peso_aluno = "-" if not aluno[5] else aluno[5]
                 altura_aluno = "-" if not aluno[6] else aluno[6]
-                print(f" -> [{aluno[0]:<{2}}] {aluno[1]:<{larg_nome}} | Email: {aluno[2]:<{larg_email}} | Plano: {aluno[4]:<{larg_pln}} | Aulas Disponiveis: {aluno[3]:<3} | Peso: {peso_aluno:<5} | Altura: {altura_aluno:<5}")
+                print(f" -> [{aluno[0]}] {aluno[1]:<{larg_nome}} | Email: {aluno[2]:<{larg_email}} | Plano: {aluno[4]:<{larg_pln}} | Aulas Disponiveis: {aluno[3]:<3} | Peso: {peso_aluno:<5} | Altura: {altura_aluno:<5}")
             print("\n")
 
     except mysql.connector.Error as erro:

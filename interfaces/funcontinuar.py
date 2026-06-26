@@ -16,7 +16,7 @@ def exibir_submenu(texto): #===========================================MENU CONT
     if comando == 1:
         return 1
     elif comando == 2:
-        print("\nVoltando...\n\n--------------------") 
+        print("\nVoltando...\n") 
         return 2
     else:
         print("\n! ERRO: Comando Inexistente !\nRetornando...\n--------------------")

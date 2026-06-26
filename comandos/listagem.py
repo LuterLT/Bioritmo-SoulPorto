@@ -4,9 +4,9 @@ from interfaces.interface import exibir_users, exibir_prod, exibir_planos
 
 def listagem_geral():
     print("\nListagem geral\n")
-    listagem_alunos()
-    listagem_planos()
-    listagem_produtos()
+    exibir_users()
+    exibir_prod()
+    exibir_planos()
 
 
 def listagem_alunos():

@@ -1,6 +1,7 @@
 import mysql.connector
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_users
+from interfaces.funcontinuar import exibir_submenu
 import re
 
 #DEF responsavel pela consulta do imc dos alunos
@@ -13,6 +14,7 @@ def consulta_imc():
         if continuar == 2:
             break
         elif continuar == 0:
+            continuar = exibir_submenu("'Consultar IMC")
             continue
         try:
             conexao = abrir_conexao()
@@ -34,11 +36,14 @@ def consulta_imc():
                     if continuar == 2:
                         break
                     elif continuar == 0:
+                        continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                         continue
                     try:
                         peso = float(input("Digite o peso do aluno (kg): ").strip().replace(",", ".")) #converte a vírgula "," em ponto "." para que o código não dê erro
                     except ValueError: #Usuário envia dados não aceitaveis 
                         print("\nERRO: Digite apenas números para o cálculo de IMC")
+                        continuar = 0
+                        continue
 
                     #Limitações de peso dos alunos
                     if peso <= 0:
@@ -98,44 +103,47 @@ def consulta_imc():
                         if continuar == 2:
                             break
                         elif continuar == 0:
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
                         try:
                             peso = float(input("\nDigite o peso (kg): ").strip().replace(",", "."))#Evitar erro de código por uso de vírgula ","
                         except ValueError: #Segurança caso insira input inválido
                             print("\nERRO: Digite apenas números.")
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
 
                         if peso <= 0: #evitar valores negativos
                             print("\nERRO: O peso deve ser maior que zero")
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
                         if peso > 700: #Evitar valores superiores a 700Kg
                             print("\nERRO: O peso não pode ser maior que 700 kg.")
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
 
                         try:
                             altura = float(input("Digite a altura (m): ").strip().replace(",", "."))#Segurança caso utilize vírgula ","
                         except ValueError:#s
                             print("\nERRO: Digite apenas números.")
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
 
                         if altura <= 0:#Evitar valores negativos
                             print("\nERRO: A altura deve ser maior que zero")
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
 
                         if altura > 3:#Evitar altura maior que 3 metros
                             print("\nERRO: A altura não pode ser maior que 3 metros.")
+                            continuar = exibir_submenu("Digitar Peso e Altura do Aluno")
                             continue
                         break
 
 
-                    else:#Caso o cadastro do aluno ja possua peso e altura
-
-                        peso = float(aluno[1])
-                        altura = float(aluno[2])
-                        
-                        print(f"\nAluno selecionado: {nome}")
-                        break
-            #fim do while totalzão que pega desde o id do aluno até a inserção dos valores nas variáveis
+                else:#Caso o cadastro do aluno ja possua peso e altura
+                    peso = float(aluno[1])
+                    altura = float(aluno[2])
+                    print(f"\nAluno selecionado: {nome}")
 
         except mysql.connector.Error as erro:
             print(f"\nArquivo-funcionalidade Linha-170\nERRO: Falha no Banco de Dados, {erro}")
@@ -201,19 +209,19 @@ def consulta_imc():
         print(dica)
 
         while True:#Sugerir uma nova consulta
-            opcao = input(
-                "\nDeseja realizar uma nova consulta? (s/n): "
-            ).strip().lower()
+            opcao = input("\nDeseja realizar uma nova consulta? (1 - Sim / 2 - Não): ").strip().lower()
 
-            if opcao == "s":
+            if opcao == "1":
                 break
 
-            elif opcao == "n":
+            elif opcao == "2":
                 print("\nRetornando ao menu...")
                 return
 
             else:
-                print("ERRO: Digite apenas s ou n.")
+                print("ERRO: Digite apenas 1 ou 2")
+                
+    
 
 
 def validar_email(email):#def responsável pela validação de email (Verifica o formato do email) 

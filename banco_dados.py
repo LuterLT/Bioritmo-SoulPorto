@@ -4,9 +4,8 @@ def abrir_conexao():
     conexao = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Senha1234$",
-        database="bioritmo",
-        use_pure = True
+        password="soul_code",
+        database="bioritmo"
     )
     return conexao
 

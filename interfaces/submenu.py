@@ -3,6 +3,7 @@ from comandos.listagem import listagem_geral, listagem_alunos, listagem_produtos
 from comandos.cadastro import cad_aluno, cad_produtos, cad_planos
 from comandos.alterarCad import alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
 from comandos.estoque import repor_est, repor_est_lote, red_est
+from comandos.financeiro import exibir_nf
 from comandos.atv_inat import aluno_atv_inat, prodserv__atv_inat, plano_atv_inat
 from interfaces.funcontinuar import exibir_submenu
 from interfaces.interface import exibir_prod
@@ -12,7 +13,6 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
     ''' 
     Essa def mostra as opções que o usuário terá para cadastrar ou alterar cadastro
     '''
-
     while True:
         try:
             print("\n1 - Realizar Novo Cadastro\n2 - Alterar Cadastro Existente\n0 - Voltar")
@@ -243,10 +243,13 @@ def submenu_atv_inat():
             plano_atv_inat()
         else:
             print("Opção inválida, selecione uma opção válida")
-            continuar = exibir_submenu("'ativar/desativar cadastro'")
+            continuar = exibir_submenu("'Ativar/desativar Cadastro'")
 
 
 def submenu_exportar():
+    '''
+    Essa def mostra o submenu com as opções de export
+    '''
     while True:
         print("""
 -----------------Lista de Comandos-----------------
@@ -267,3 +270,53 @@ def submenu_exportar():
             continue
         
         return escolha
+
+
+def submenu_financ():
+    '''
+    Essa def mostra as opções do submenu de finanças, como NF e painel BI, além de permitir a alteração de preço
+    de produtos, serviços e planos
+    '''
+    while True:
+        try:
+            print("\n1 - Alteração de Preços\n2 - Exibir Nota Fiscal\n3 - Painel B.I\n4 - Aplicar Promoções\n0 - Voltar")
+            comando = int(input("\nQual opção deseja acessar? "))
+        except ValueError:
+            print("ERRO: Digite apenas números inteiros!")
+            continue
+        
+        if comando == 0:
+            return
+        elif comando == 1:
+            try:
+                print("\n1 - Alterar Preço de Produto/Serviço\n2 - Alterar Preço de Plano\n0 - Voltar")
+                subcomando = int(input("\nQual opção deseja acessar? "))
+            except ValueError:
+                print("ERRO: Digite apenas números inteiros!")
+                continue
+
+            if subcomando == 0:
+                return
+            if subcomando == 1:
+                pass
+                #inserir def de alterar preço de prodserv
+            elif subcomando == 2:
+                pass
+                #inserir def de alterar preço de plano
+            else:
+                print("ERRO: Operação Inválida")
+                continue
+        elif comando == 2:
+            exibir_nf()
+        elif comando == 3:
+            pass
+            #inserir aqui def de exibir painel bi
+        elif comando == 4:
+            pass
+            #promoção
+        else:
+            print("ERRO: Operação Inválida")
+            break
+                
+                
+

@@ -7,7 +7,7 @@ from comandos.carrinho import carrinho_venda
 from comandos.funcionalidades import consulta_imc
 
 # importação dos submenus de cada função
-from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat
+from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat, submenu_financ
 from interfaces.funcontinuar import exibir_submenuHome
 from interfaces.interface import exibir_menu
 from comandos.exportar import export_vendas
@@ -86,7 +86,7 @@ while True:
     
     elif menu == 9:
         print("\n-----Controle Financeiro-----\n")   
-        #não iniciada
+        submenu_financ()
     
     elif menu == 10:
         print("\n-----Exportar Relatórios-----\n")

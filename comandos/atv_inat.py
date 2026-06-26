@@ -181,14 +181,6 @@ def aluno_inat():
 
 
 
-
-
-
-
-
-
-
-
 def prodserv__atv_inat():
     '''
     essa def altera o estado dos produtos / serviços entre inativo e ativo
