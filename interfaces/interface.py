@@ -114,12 +114,15 @@ def exibir_planos(): #=============================================EXIBIR PLANOS
         resultado = cursor.fetchall()
         
         if len(resultado) == 0:
-            print("Nenhum resultado encontrado.")
+            print("\nERRO: Nenhum Plano Cadastrado.")
         else:
             print("\nPlanos:")
+            print(f"\n     ID  {'Nome':<20}{'Preço':<15}{'Aulas Permitidas'}")
+            print("-" * 75)
+
             for plano in resultado:
                 larg_nome = max(len(plano[1]) for plano in resultado)
-                print(f" -> [{plano[0]}] {plano[1]:<{larg_nome}} | Preço: {plano[2]:<6} | Aulas permitidas: {plano[3]}")
+                print(f" -> [{plano[0]}] {plano[1]:<{larg_nome}} | Preço: {plano[2]:<15} | Aulas permitidas: {plano[3]}")
             print("\n")
 
     except mysql.connector.Error as erro:

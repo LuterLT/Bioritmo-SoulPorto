@@ -1,13 +1,12 @@
 from comandos.consultas import consulta_geral, consulta_alunos, consulta_produtos, consulta_planos
-from comandos.listagem import listagem_geral, listagem_alunos, listagem_produtos, listagem_planos
 from comandos.cadastro import cad_aluno, cad_produtos, cad_planos
 from comandos.alterarCad import alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
 from comandos.estoque import repor_est, repor_est_lote, red_est
-from comandos.financeiro import exibir_nf
+from comandos.financeiro import exibir_nf, promocao_produto, promocao_plano, alt_preco_prodserv, alt_preco_plano
 from comandos.atv_inat import aluno_atv_inat, prodserv__atv_inat, plano_atv_inat
+from comandos.exportar import export_vendas_geral, export_vendas_qtde, export_chekin_geral, export_checkin_qtde
 from interfaces.funcontinuar import exibir_submenu
-from interfaces.interface import exibir_prod
-
+from interfaces.interface import exibir_users, exibir_prod, exibir_planos
 
 def submenu_cad(): #===============================================EXIBE SUBMENU DE CADASTRO===
     ''' 
@@ -194,13 +193,16 @@ def submenu_listar():
         if listar == 0:
             return
         elif listar == 1:
-            listagem_geral()
+            print("\nListagem geral\n")
+            exibir_users()
+            exibir_prod()
+            exibir_planos()
         elif listar == 2:
-            listagem_alunos()
+            exibir_users()
         elif listar == 3:
-            listagem_produtos()
+            exibir_prod()
         elif listar == 4:
-            listagem_planos()
+            exibir_planos()
         else:
             print("Opção inválida, selecione uma opção válida")
             continuar = exibir_submenu("'escolher tipo de listagem'")
@@ -228,7 +230,8 @@ def submenu_atv_inat():
             listar = int(input("\nCadastro a ser ativado/desativado: "))
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
-            return
+            input("Aperte ENTER para Continuar")
+            continue
 
         if listar == 0:
             return
@@ -250,26 +253,43 @@ def submenu_exportar():
     '''
     Essa def mostra o submenu com as opções de export
     '''
+    continuar = 1
     while True:
-        print("""
------------------Lista de Comandos-----------------
-[1] - Exportar uma QUANTIDADE de Vendas Específicas 
-[2] - Exportar TODAS as Vendas Registradas
-[3] - Voltar
----------------------------------------------------
-""")
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continuar = exibir_submenu("'exportar relatório'")
+
+        print(" ----- Lista de Comandos ----- \n",
+            "Qual relatório desejado?\n",
+            " [1] - Vendas - Geral\n",
+            " [2] - Vendas - Quantidade Específica\n",
+            " [3] - Check-in - Geral\n",
+            " [4] - Check-in - Quantidade Específica\n",
+            " [0] - Sair de 'Exportar Relatório'\n",
+            " ----------------------------- \n"
+        )
+
         try:
-            escolha = int(input("Escolha uma das opções acima: "))
+            opc = int(input("Relatório a ser exportado: "))
         except ValueError:
-            print("\nERRO: Você digitou um dado Incorreto, Esse Campo Aceita Apenas Números Inteiros")
+            print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
             input("Aperte ENTER para Continuar")
             continue
-        if escolha<1 or escolha>3:
-            print("\nERRO: Número de Comando Inválido, Escolha um dos Números Contidos no Menu")
-            input("Aperte ENTER para Continuar")
-            continue
-        
-        return escolha
+
+        if opc == 0:
+            return
+        elif opc == 1:
+            export_vendas_geral()
+        elif opc == 2:
+            export_vendas_qtde()
+        elif opc == 3:
+            export_chekin_geral()
+        elif opc == 4:
+            export_checkin_qtde()
+        else:
+            print("Opção inválida, selecione uma opção válida")
+            continuar = exibir_submenu("'exportar relatório'")
 
 
 def submenu_financ():
@@ -279,15 +299,15 @@ def submenu_financ():
     '''
     while True:
         try:
-            print("\n1 - Alteração de Preços\n2 - Exibir Nota Fiscal\n3 - Painel B.I\n4 - Aplicar Promoções\n0 - Voltar")
+            print("\n1 - Alteração de Preços\n2 - Aplicar Promoções\n3 - Exibir Nota Fiscal\n4 - Painel B.I\n0 - Voltar")
             comando = int(input("\nQual opção deseja acessar? "))
         except ValueError:
             print("ERRO: Digite apenas números inteiros!")
             continue
         
-        if comando == 0:
-            return
-        elif comando == 1:
+        if comando == 0: #====================ENCERRA O SUBMENU=======================
+            break
+        elif comando == 1: #====================ALTERAR PREÇO=======================
             try:
                 print("\n1 - Alterar Preço de Produto/Serviço\n2 - Alterar Preço de Plano\n0 - Voltar")
                 subcomando = int(input("\nQual opção deseja acessar? "))
@@ -295,28 +315,46 @@ def submenu_financ():
                 print("ERRO: Digite apenas números inteiros!")
                 continue
 
-            if subcomando == 0:
-                return
-            if subcomando == 1:
-                pass
-                #inserir def de alterar preço de prodserv
-            elif subcomando == 2:
-                pass
-                #inserir def de alterar preço de plano
-            else:
-                print("ERRO: Operação Inválida")
+            if subcomando == 0: #==================== opção de voltar
                 continue
-        elif comando == 2:
+            elif subcomando == 1: #================= alterar preço de produtos e serviços
+                alt_preco_prodserv()
+            elif subcomando == 2: #================= alterar preço de planos
+                alt_preco_plano()
+            else: #==================== nenhuma opção do menu
+                print("ERRO: Opção Inválida")
+                continue
+
+        elif comando == 2:  # ==================== APLICAR PROMOÇÕES ====================
+            try:
+                print("\n1 - Aplicar Promoção em Produtos/Serviços")
+                print("2 - Aplicar Promoção em Planos")
+                print("0 - Voltar")
+                subcomando = int(input("\nQual opção deseja acessar? "))
+            except ValueError:
+                print("ERRO: Digite apenas números inteiros!")
+                continue
+
+            if subcomando == 0:
+                continue
+
+            elif subcomando == 1:   # Produtos e Serviços
+
+                print("\n--- Aplicar Promoção em Produtos/Serviços ---")
+                promocao_produto()
+
+            elif subcomando == 2:   # Planos
+                print("\n--- Aplicar Promoção em Planos ---")
+                promocao_plano()
+
+            else:
+                print("ERRO: Opção inválida!")
+            
+        elif comando == 3: #====================EXIBIR NOTA FISCAL=======================
             exibir_nf()
-        elif comando == 3:
-            pass
-            #inserir aqui def de exibir painel bi
-        elif comando == 4:
-            pass
-            #promoção
+            
+        elif comando == 4: #====================EXIBIR PAINEL BI=======================
+            painel_bi()
         else:
             print("ERRO: Operação Inválida")
             break
-                
-                
-

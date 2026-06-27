@@ -92,7 +92,6 @@ def consulta_geral():
             conexao.close()
 
 
-
 def consulta_alunos():
     print("\nConsulta de alunos\n")
 

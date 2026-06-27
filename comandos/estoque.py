@@ -4,7 +4,7 @@ from interfaces.interface import exibir_prod
 from interfaces.funcontinuar import exibir_submenu
 
 
-def repor_est():
+def repor_est():#def responsavel pela reposição de estoque
     exibir_prod()
     continuar = 1
     while True:
@@ -13,7 +13,7 @@ def repor_est():
         elif continuar == 0:
             continuar = exibir_submenu("'Repor Estoque'")
             
-        try:
+        try: #inserir o ID do produto e verifica se o valor está em um formato aceitável
             id_prod = int(input("\nDigite o [ID] do produto que deseja repor estoque: "))
         except ValueError:
             print("ERRO: O ID deve ser um número inteiro!")
@@ -35,7 +35,7 @@ def repor_est():
                 continuar = 0
                 continue
             print(f"\nEstoque disponível de {prod[0]}: {prod[2]} unidades")
-            try:
+            try: #Reposição do estoque e verificação de valor aceitável para reposição
                 qtde_rep = int(input("\nQuantas unidades deseja adicionar no estoque? "))
             except ValueError:
                 print("ERRO: A quantidade deve ser um número inteiro")
@@ -104,7 +104,7 @@ def repor_est_lote(qtde_rep, *lista_ids):
 
 
 
-def red_est():
+def red_est(): #Def responsável por reduzir o estoque
     exibir_prod()
     continuar = 1
     while True:
@@ -113,7 +113,7 @@ def red_est():
         elif continuar == 0:
             continuar = exibir_submenu("'Reduzir Estoque'")
             continue
-        try:
+        try: #Input busca o ID do produto / verifica se é um valor válido 
             id_prod = int(input("\nDigite o [ID] do produto que deseja reduzir estoque: "))
         except ValueError:
             print("ERRO: O ID deve ser um número inteiro!")
@@ -122,20 +122,20 @@ def red_est():
         try:
             conexao = abrir_conexao()
             cursor = conexao.cursor()
-
+            #busca na db
             cursor.execute("SELECT nome, categoria, qtde FROM prodserv WHERE id = %s AND ativo = 1", (id_prod,))
             prod = cursor.fetchone()
-
+            #verifica se existe o produto
             if not prod:
                 print("ERRO: O produto buscado não existe ou está inativo!")
                 continuar = 0
                 continue
-            if prod[1] == "Serviços":
+            if prod[1] == "Serviços": #verifica se é um serviço (serviço não tem estoque)
                 print("ERRO: Não é possível alterar o estoque de serviços!")
                 continuar = 0
                 continue
-            print(f"\nEstoque disponível de {prod[0]}: {prod[2]} unidades")
-            try:
+            print(f"\nEstoque disponível de {prod[0]}: {prod[2]} unidades") #apresenta o estoque disponível
+            try: #input quantas unidades serão retiradas do estoque / verifica se valor é válido
                 qtde_red = int(input("\nQuantas unidades deseja retirar do estoque? "))
             except ValueError:
                 print("ERRO: A quantidade deve ser um número inteiro")
@@ -146,7 +146,7 @@ def red_est():
                 continuar = 0
                 continue
             if qtde_red == prod[2]:
-                try:
+                try:# confirmação 
                     conf = int(input("O estoque será zerado. Você tem certeza que deseja fazer isso? (1 - Sim | 2 - Não) "))
                 except ValueError:
                     print("ERRO: A entrada deve ser um número. Operação cancelada")

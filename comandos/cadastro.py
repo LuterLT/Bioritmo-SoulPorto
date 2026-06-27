@@ -24,7 +24,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
         novo_email = input("Digite o e-mail do novo aluno: ").strip()
         if not validar_email(novo_email):
             print("\nERRO: Email Inválido")
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continuar = 0
             continue
 
         try:

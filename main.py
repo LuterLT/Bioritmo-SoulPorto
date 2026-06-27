@@ -7,10 +7,9 @@ from comandos.carrinho import carrinho_venda
 from comandos.funcionalidades import consulta_imc
 
 # importação dos submenus de cada função
-from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat, submenu_financ
+from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat, submenu_financ, submenu_exportar
 from interfaces.funcontinuar import exibir_submenuHome
 from interfaces.interface import exibir_menu
-from comandos.exportar import export_vendas
 
 #iniciar o programa
 iniciar_db()
@@ -89,11 +88,9 @@ while True:
         submenu_financ()
     
     elif menu == 10:
-        print("\n-----Exportar Relatórios-----\n")
-        #não iniciada
+        submenu_exportar()
 
     else:
-        export_vendas()
         print("ERRO: Operação Inválida")
     
     continuar = exibir_submenuHome() #-> Menu de Continuidade
