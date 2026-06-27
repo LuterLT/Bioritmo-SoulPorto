@@ -496,7 +496,7 @@ def painel_bi():
         cursor = conexao.cursor()
 
         cursor.execute("SELECT COUNT(*) FROM vendas")
-        if cursor.fetchall()[0] == 0:
+        if cursor.fetchone()[0] == 0: # ~~~~ALTERAÇÃO NO FETCH PARA VER SE RESOLVE O BUG!~~~~~~
             print("\nNenhuma venda registrada até o momento")
             return
         cursor.execute("SELECT SUM(subtotal) FROM vendas")
@@ -517,6 +517,20 @@ def painel_bi():
         """)
         prod_camp, maior_qtde = cursor.fetchone()
         print(f"-> Produto mais vendido: {prod_camp} ({maior_qtde}) unidades vendidas!")
+
+        #ADICIONANDO UNIDADE MENOS VENDIDA CASO NÃO QUEIRA PODE APAGAR 
+        cursor.execute("""
+            SELECT prodserv.nome, SUM(vendas.qtde)
+            FROM vendas
+            INNER JOIN prodserv ON vendas.id_prodserv = prodserv.id
+            GROUP BY prodserv.nome
+            ORDER BY SUM(vendas.qtde) ASC
+            LIMIT 1
+        """)
+        prod_menos, menor_qtde = cursor.fetchone()
+        print(f"\n-> Produto menos vendido: {prod_menos} ({menor_qtde}) unidades vendidas!")
+
+        #FIM DO UNIDADE MENOS VENDIDA
 
     except mysql.connector.Error as erro:
             conexao.rollback()

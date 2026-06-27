@@ -73,7 +73,7 @@ def carrinho_venda():
                     print("ERROR: Quantidade Inválida! A quantidade deve ser um número inteiro")
                     continue
 
-                qtd_no_carrinho = sum(prodserv['qtd'] for prodserv in carrinho if prodserv['id'] == id_venda)
+                qtd_no_carrinho = sum(prodserv['qtde'] for prodserv in carrinho if prodserv['id'] == id_venda)
                 estoque_disponivel = estoque_real - qtd_no_carrinho
 
                 if qtd <= 0:
@@ -87,7 +87,7 @@ def carrinho_venda():
                         "nome": nome_prodserv,
                         "categoria": categ_prodserv,
                         "preco": preco_prodserv,
-                        "qtd": qtd,
+                        "qtde": qtd,
                         "subtotal": qtd * preco_prodserv,
                     })
 
@@ -114,7 +114,7 @@ def carrinho_venda():
                                     UPDATE prodserv
                                     SET qtde = qtde - %s
                                     WHERE id = %s
-                                """, (item['qtd'], item['id']))
+                                """, (item['qtde'], item['id']))
                                 
                             cursor.execute("""
                                 INSERT INTO vendas (id_prodserv, horario, qtde, subtotal)

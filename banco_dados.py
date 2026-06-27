@@ -85,7 +85,7 @@ def iniciar_db():
                 INSERT INTO prodserv (nome, categoria, preco, qtde)
                 VALUES (%s, %s, %s, %s)
             """, prodserv_iniciais)
-        conexao.commit()
+        conexao_commit()
 
         cursor.execute("SELECT COUNT(*) FROM planos")
         if cursor.fetchone()[0] == 0:
@@ -100,7 +100,6 @@ def iniciar_db():
                 INSERT INTO planos (nome, preco, qtde_aulas)
                 VALUES (%s, %s, %s)
             """, planos_iniciais)
-        conexao.commit()
 
         cursor.execute("SELECT COUNT(*) FROM aluno")
         if cursor.fetchone()[0] == 0: #verificar se não tem nem UMA linha na tabela aluno
