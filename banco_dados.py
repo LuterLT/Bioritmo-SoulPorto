@@ -85,7 +85,7 @@ def iniciar_db():
                 INSERT INTO prodserv (nome, categoria, preco, qtde)
                 VALUES (%s, %s, %s, %s)
             """, prodserv_iniciais)
-        conexao_commit()
+            conexao.commit()
 
         cursor.execute("SELECT COUNT(*) FROM planos")
         if cursor.fetchone()[0] == 0:

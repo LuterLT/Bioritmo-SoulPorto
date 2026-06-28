@@ -170,8 +170,8 @@ def export_chekin_geral():#===============================================CHECKI
         mes_atual = hoje.month
         dia_atual = hoje.day
         hoje_formatado = hoje.strftime("%d/%m/%y")
-        checkin_mensal = sum(1 for checkin in checkins if checkin[1].month ==  mes_atual and checkin[1].year == ano_atual) + 1
-        checkin_diario = sum(1 for checkin in checkins if checkin[1].day ==  dia_atual and checkin[1].month ==  mes_atual and checkin[1].year == ano_atual) + 1
+        checkin_mensal = sum(1 for checkin in checkins if checkin[1].month ==  mes_atual and checkin[1].year == ano_atual)
+        checkin_diario = sum(1 for checkin in checkins if checkin[1].day ==  dia_atual and checkin[1].month ==  mes_atual and checkin[1].year == ano_atual) 
 
     except mysql.connector.Error as erro:
         print(f"\nArquivo: exportar, função: export_checkin_geral() \nERRO: Falha no Banco de Dados: {erro}")
@@ -249,8 +249,8 @@ def export_checkin_qtde():#================================================CHECK
         mes_atual = hoje.month
         dia_atual = hoje.day
         hoje_formatado = hoje.strftime("%d/%m/%y")
-        checkin_mensal = sum(1 for checkin in checkins if checkin[0].month ==  mes_atual and checkin[0].year == ano_atual) + 1
-        checkin_diario = sum(1 for checkin in checkins if checkin[0].day ==  dia_atual and checkin[0].month ==  mes_atual and checkin[0].year == ano_atual) + 1
+        checkin_mensal = sum(1 for checkin in checkins if checkin[0].month ==  mes_atual and checkin[0].year == ano_atual) 
+        checkin_diario = sum(1 for checkin in checkins if checkin[0].day ==  dia_atual and checkin[0].month ==  mes_atual and checkin[0].year == ano_atual) 
     except mysql.connector.Error as erro:
         print(f"\nArquivo: exportar - Linha: 255\nERRO: Falha no Banco de Dados, {erro}")
         input("Aperte ENTER para Continuar")
@@ -267,7 +267,7 @@ def export_checkin_qtde():#================================================CHECK
         arquivo.write("                    RELATÓRIO DE CHECK-IN QUANTITATIVO                    \n")
         arquivo.write("--------------------------------------------------------------------------\n")
         arquivo.write(f"Data de Hoje: {hoje_formatado}\n")
-        arquivo.write(f"Checkins de Hoje = R$ {checkin_diario:.2f} ----------- Checkins Mensal: {checkin_mensal}\n")
+        arquivo.write(f"Checkins de Hoje = {checkin_diario} ----------- Checkins Mensal: {checkin_mensal}\n")
         for checkin in checkins:
             linha = f"- DATA: {checkin[0]} | ALUNO: '{checkin[1]}'\n"
             arquivo.write(linha)

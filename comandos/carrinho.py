@@ -31,7 +31,7 @@ def carrinho_venda():
                 print(f"-> [{item['id']}] {item['nome']} x {item['qtde']} | Categoria: {item['categoria']} | Valor Unitário: R${item['preco']} | Subtotal: R${item['subtotal']} ")
 
             try:
-                print("\n1 - Adicionar ao carrinho\n2 - FINALIZAR compra\n3 - CANCELAR compra")
+                print("\n1 - Adicionar ao carrinho\n2 - FINALIZAR compra\n3 - CANCELAR compra e VOLTAR")
                 opcao = int(input("\nQual opção deseja acessar? "))
             except ValueError:
                 print("ERRO: Opção inválida")
@@ -39,7 +39,7 @@ def carrinho_venda():
             if opcao == 2:
                 break
             elif opcao == 3:
-                print("Compra CANCELADA")
+                print("Compra CANCELADA\nVoltando...\n")
                 carrinho = []
                 return
             elif opcao == 1:
@@ -77,10 +77,14 @@ def carrinho_venda():
                 estoque_disponivel = estoque_real - qtd_no_carrinho
 
                 if qtd <= 0:
-                    print("ERRO: Quantidade invalida!")
+                    print("\nERRO: Quantidade invalida!")
+                    input("Aperte ENTER para Continuar")
+                    continue
                 elif qtd > estoque_disponivel:
-                    print("ERRO: Estoque Insuficiente")
-                    print(f"\nTemos no estoque {estoque_real} unidades e você já tem {qtd_no_carrinho} no carrinho")
+                    print("\nERRO: Estoque Insuficiente")
+                    print(f"Temos no estoque {estoque_disponivel} unidades e você já tem {qtd_no_carrinho} no carrinho")
+                    input("Aperte ENTER para Continuar")
+                    continue
                 else:
                     carrinho.append({
                         "id": id_venda,
@@ -94,51 +98,55 @@ def carrinho_venda():
                     print(f"\n-> {nome_prodserv} x {qtd} adicionado ao carrinho!\n")
                     continue
 
-            if len(carrinho) > 0:
-                total_compra = sum(item['subtotal'] for item in carrinho)
-                print(f"\n ===== Fechamento do caixa ===== \n"
-                    f"Total a pagar: R$ {total_compra:.2f}")
-                print(f"Produtos no carrinho: ")
-                for item in carrinho:#arrousou
-                    print(f"-> [{item['id']}] {item['nome']} x {item['qtd']} | Categoria: {item['categoria']} | Valor Unitário: R${item['preco']} | Subtotal: R${item['subtotal']} ")
-                confirmar = input("\nConfirmar pagamento e registrar venda (s/n)?\n").lower().strip()
+        if len(carrinho) > 0:
+            total_compra = sum(item['subtotal'] for item in carrinho)
+            print(f"\n ===== Fechamento do caixa ===== \n"
+                f"Total a pagar: R$ {total_compra:.2f}")
+            print(f"Produtos no carrinho: ")
+            for item in carrinho:
+                print(f"-> [{item['id']}] {item['nome']} x {item['qtde']} | Categoria: {item['categoria']} | Valor Unitário: R${item['preco']} | Subtotal: R${item['subtotal']} ")
+            confirmar = input("\nConfirmar pagamento e registrar venda (s/n)?\n").lower().strip()
 
-                if confirmar == "s":
-                    conexao = abrir_conexao()
-                    cursor = conexao.cursor()
+            if confirmar == "s":
+                conexao = abrir_conexao()
+                cursor = conexao.cursor()
 
-                    try:
-                        for item in carrinho:
-                            if item['categoria'].lower() != "serviços":
-                                cursor.execute("""
-                                    UPDATE prodserv
-                                    SET qtde = qtde - %s
-                                    WHERE id = %s
-                                """, (item['qtde'], item['id']))
-                                
+                try:
+                    for item in carrinho:
+                        if item['categoria'].lower() != "serviços":
                             cursor.execute("""
-                                INSERT INTO vendas (id_prodserv, horario, qtde, subtotal)
-                                VALUES (%s, %s, %s, %s)
-                            """, (
-                                item['id'],
-                                datetime.datetime.now().strftime("%y/%m/%d - %H:%M:%S"),
-                                item['qtd'],
-                                item['subtotal']
-                                )
+                                UPDATE prodserv
+                                SET qtde = qtde - %s
+                                WHERE id = %s
+                            """, (item['qtde'], item['id']))
+                            
+                        cursor.execute("""
+                            INSERT INTO vendas (id_prodserv, horario, qtde, subtotal)
+                            VALUES (%s, %s, %s, %s)
+                        """, (
+                            item['id'],
+                            datetime.datetime.now().strftime("%y/%m/%d - %H:%M:%S"),
+                            item['qtde'],
+                            item['subtotal']
                             )
-                        conexao.commit()
-                        print("Venda concluida com sucesso! >:D \n")
+                        )
+                    conexao.commit()
+                    print("Venda concluida com sucesso! >:D \n")
+                    carrinho = []
 
-                    except mysql.connector.Error as erro:
-                        conexao.rollback()
-                        print("\nERROR FATAL no banco de dados: Transação cancelada!",
-                                f"Motivo técnico: {erro}",
-                                "Estoque restaurado e nenhuma nota fiscal corrompida gerada.")
+                except mysql.connector.Error as erro:
+                    conexao.rollback()
+                    print("\nERROR FATAL no banco de dados: Transação cancelada!",
+                            f"Motivo técnico: {erro}",
+                            "Estoque restaurado e nenhuma nota fiscal corrompida gerada.")
 
-                    finally:
-                        if 'conexao' in locals() and conexao.is_connected():
-                            cursor.close()
-                            conexao.close()
+                finally:
+                    if 'conexao' in locals() and conexao.is_connected():
+                        cursor.close()
+                        conexao.close()
 
-                else: #se colocar "n" no confirmar
-                    print("\nVenda não finalizada!\n")
+            else: #se colocar "n" no confirmar
+                print("\nVenda não finalizada!\n")
+        else:
+            print("\nERRO: Não é Possível Finalizar uma Compra sem Itens no Carrinho")
+            input("Aperte ENTER para Continuar")

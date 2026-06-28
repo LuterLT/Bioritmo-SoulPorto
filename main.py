@@ -8,13 +8,11 @@ from comandos.funcionalidades import consulta_imc
 
 # importação dos submenus de cada função
 from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat, submenu_financ, submenu_exportar
-from interfaces.funcontinuar import exibir_submenuHome
 from interfaces.interface import exibir_menu
 
 #iniciar o programa
 iniciar_db()
 
-continuar = 1 #-> inicialização base do menu de continuidade
 while True:
 
     try:
@@ -32,13 +30,6 @@ while True:
         if 'conexao' in locals() and conexao.is_connected():
             cursor.close()
             conexao.close()
-    
-    if continuar == 2: #-> Se o usuário escolheu sair (parar de continuar)
-        print(f"Caixa Atual: {caixa:.2f}\nEncerrando o Sistema...")
-        break
-    elif continuar == 0: #-> Se o usuário digitou o comando errado no submenu de continuidade
-        continuar = exibir_submenuHome()
-        continue
     
     exibir_menu()
     try:
@@ -93,5 +84,4 @@ while True:
     else:
         print("ERRO: Operação Inválida")
     
-    continuar = exibir_submenuHome() #-> Menu de Continuidade
     continue
