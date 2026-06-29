@@ -1,4 +1,5 @@
 import mysql.connector
+
 from banco_dados import abrir_conexao
 from interfaces.funcontinuar import exibir_submenu
 
@@ -14,9 +15,9 @@ def aluno_atv_inat():
             continuar = exibir_submenu("'ativar / desativar aluno'")
 
         print("\nAtivar ou desativar aluno?\n",
-            " [1] - Ativar aluno\n",
-            " [2] - Inativar aluno\n",
-            " [0] - Sair de ativar / desativar aluno\n",)
+                " [1] - Ativar aluno\n",
+                " [2] - Inativar aluno\n",
+                " [0] - Sair de ativar / desativar aluno\n",)
         
         try:
             opc = int(input("Opção desejada: "))
@@ -193,9 +194,9 @@ def prodserv__atv_inat():
             continuar = exibir_submenu("'ativar / desativar produto / serviço'")
 
         print("\nAtivar ou desativar produto / serviço?\n",
-            " [1] - Ativar produto / serviço\n",
-            " [2] - Inativar produto / serviço\n",
-            " [0] - Sair de ativar / desativar produto / serviço\n",)
+                " [1] - Ativar produto / serviço\n",
+                " [2] - Inativar produto / serviço\n",
+                " [0] - Sair de ativar / desativar produto / serviço\n",)
         
         try:
             opc = int(input("Opção desejada: "))

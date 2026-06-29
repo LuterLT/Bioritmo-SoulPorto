@@ -1,8 +1,9 @@
 import mysql.connector
+import re
+
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_users
 from interfaces.funcontinuar import exibir_submenu
-import re
 
 #DEF responsavel pela consulta do imc dos alunos
 def consulta_imc():
@@ -220,15 +221,13 @@ def consulta_imc():
 
             else:
                 print("ERRO: Digite apenas 1 ou 2")
-                
-    
 
 
 def validar_email(email):#def responsável pela validação de email (Verifica o formato do email) 
     '''
     Essa função vai receber o email digitar e vai verificar se ela segue o mesmo padrão do regex
     '''
-    padrao = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    padrao = r"^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     if re.fullmatch(padrao, email):
         return email
     else:

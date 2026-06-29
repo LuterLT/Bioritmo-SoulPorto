@@ -1,4 +1,5 @@
 import mysql.connector
+
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_prod
 from interfaces.funcontinuar import exibir_submenu
@@ -12,6 +13,7 @@ def repor_est():#def responsavel pela reposição de estoque
             break
         elif continuar == 0:
             continuar = exibir_submenu("'Repor Estoque'")
+            continue
             
         try: #inserir o ID do produto e verifica se o valor está em um formato aceitável
             id_prod = int(input("\nDigite o [ID] do produto que deseja repor estoque: "))
@@ -65,41 +67,52 @@ def repor_est():#def responsavel pela reposição de estoque
 
 
 def repor_est_lote(qtde_rep, *lista_ids):
-    try:
-        conexao = abrir_conexao()
-        cursor = conexao.cursor()
+    continuar = 1
+    while True:
+        if continuar == 2:
+            break
+        elif continuar == 0:
+            continuar = exibir_submenu("'Repor Estoque'")
+            continue
+        try:
+            conexao = abrir_conexao()
+            cursor = conexao.cursor()
 
-        print(f"\nIniciando reposição de +{qtde_rep} unidades para os IDs selecionados no estoque...")
-        for id_produto in lista_ids:
-            cursor.execute("SELECT nome, categoria FROM prodserv WHERE id = %s", (id_produto,))
-            resultado = cursor.fetchone()
+            print(f"\nIniciando reposição de +{qtde_rep} unidades para os IDs selecionados no estoque...")
+            for id_produto in lista_ids:
+                cursor.execute("SELECT nome, categoria FROM prodserv WHERE id = %s", (id_produto,))
+                resultado = cursor.fetchone()
 
-            if not resultado:
-                print(f"- ERRO: Produto com o ID {id_produto} não existe no sistema")
-                return
-            
-            if resultado[1] == "Serviços":
-                print("ERRO: Não é possível alterar o estoque de Serviços")
-                return
+                if not resultado:
+                    print(f"- ERRO: Produto com o ID {id_produto} não existe no sistema")
+                    continuar = 0
+                    continue
+                
+                if resultado[1] == "Serviços":
+                    print("ERRO: Não é possível alterar o estoque de Serviços")
+                    continuar = 0
+                    continue
 
-            nome_prod = resultado[0]
+                nome_prod = resultado[0]
 
-            cursor.execute("""
-                UPDATE prodserv
-                SET qtde = qtde + %s
-                WHERE id = %s
-            """, (qtde_rep, id_produto))
-            print(f"- Foram adicionadas {qtde_rep} unidades do seguinte produto: {nome_prod}")
-            conexao.commit()
+                cursor.execute("""
+                    UPDATE prodserv
+                    SET qtde = qtde + %s
+                    WHERE id = %s
+                """, (qtde_rep, id_produto))
+                print(f"- Foram adicionadas {qtde_rep} unidades do seguinte produto: {nome_prod}")
+                conexao.commit()
+            break
 
-    except mysql.connector.Error as erro:
-        conexao.rollback()
-        print(f"ERRO FATAL DE CONEXÃO COM O BANCO: {erro}")
+        except mysql.connector.Error as erro:
+            conexao.rollback()
+            print(f"ERRO FATAL DE CONEXÃO COM O BANCO: {erro}")
+            return
 
-    finally:
-        if 'conexao' in locals() and conexao.is_connected():
-            cursor.close()
-            conexao.close()
+        finally:
+            if 'conexao' in locals() and conexao.is_connected():
+                cursor.close()
+                conexao.close()
 
 
 
@@ -113,6 +126,7 @@ def red_est(): #Def responsável por reduzir o estoque
         elif continuar == 0:
             continuar = exibir_submenu("'Reduzir Estoque'")
             continue
+
         try: #Input busca o ID do produto / verifica se é um valor válido 
             id_prod = int(input("\nDigite o [ID] do produto que deseja reduzir estoque: "))
         except ValueError:

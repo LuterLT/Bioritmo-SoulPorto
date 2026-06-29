@@ -8,6 +8,7 @@ import datetime
 def carrinho_venda():
     carrinho = []
     continuar = 1
+    estoque_disponivel = 0
 
     while True:
         if continuar == 2:
@@ -24,7 +25,7 @@ def carrinho_venda():
                 continue
             exibir_prod()
             #exibe carrinho
-            print("--- Carrinho ---")
+            print(" ----- Carrinho ----- ")
             if len(carrinho) == 0:
                 print("Carrinho vazio até o momento")
             for item in carrinho:
@@ -60,12 +61,15 @@ def carrinho_venda():
                     print("ERRO: ID invalido! Produto/Serviço não existe ou está desativado")
                     continuar = 0
                     continue
-                    
+
                 nome_prodserv, categ_prodserv, preco_prodserv, estoque_real = resultado
+
+                qtd_no_carrinho = sum(prodserv['qtde'] for prodserv in carrinho if prodserv['id'] == id_venda)
+                estoque_disponivel = estoque_real - qtd_no_carrinho
 
                 try:
                     if categ_prodserv.lower() != "serviços":
-                        print(f"Estoque disponível de '{nome_prodserv}': {estoque_real}")
+                        print(f"Estoque disponível de '{nome_prodserv}': {estoque_real if estoque_disponivel == 0 else estoque_disponivel}")
                         qtd = int(input(f"Quantas unidades você deseja adicionar ao carinho? "))
                     else:
                         qtd = 1
@@ -82,7 +86,7 @@ def carrinho_venda():
                     continue
                 elif qtd > estoque_disponivel:
                     print("\nERRO: Estoque Insuficiente")
-                    print(f"Temos no estoque {estoque_disponivel} unidades e você já tem {qtd_no_carrinho} no carrinho")
+                    print(f"Restam {estoque_disponivel} unidades disponiveis e você tem {qtd_no_carrinho} no carrinho")
                     input("Aperte ENTER para Continuar")
                     continue
                 else:
@@ -105,9 +109,9 @@ def carrinho_venda():
             print(f"Produtos no carrinho: ")
             for item in carrinho:
                 print(f"-> [{item['id']}] {item['nome']} x {item['qtde']} | Categoria: {item['categoria']} | Valor Unitário: R${item['preco']} | Subtotal: R${item['subtotal']} ")
-            confirmar = input("\nConfirmar pagamento e registrar venda (s/n)?\n").lower().strip()
+            confirmar = input("\nConfirmar pagamento e registrar venda (1 - sim / 2 - não)?\n").lower().strip()
 
-            if confirmar == "s":
+            if confirmar == "1":
                 conexao = abrir_conexao()
                 cursor = conexao.cursor()
 
@@ -132,6 +136,7 @@ def carrinho_venda():
                         )
                     conexao.commit()
                     print("Venda concluida com sucesso! >:D \n")
+                    input("Digite ENTER para continuar")
                     carrinho = []
 
                 except mysql.connector.Error as erro:
@@ -145,7 +150,7 @@ def carrinho_venda():
                         cursor.close()
                         conexao.close()
 
-            else: #se colocar "n" no confirmar
+            else: #se colocar "n" ou outro valor no confirmar
                 print("\nVenda não finalizada!\n")
         else:
             print("\nERRO: Não é Possível Finalizar uma Compra sem Itens no Carrinho")

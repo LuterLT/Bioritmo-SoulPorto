@@ -2,9 +2,9 @@
 import mysql.connector
 
 from banco_dados import iniciar_db, abrir_conexao
-from comandos.checkin import checkin
-from comandos.carrinho import carrinho_venda
-from comandos.funcionalidades import consulta_imc
+from comandos.operacoes.checkin import checkin
+from comandos.financas.carrinho import carrinho_venda
+from comandos.funcionalidade.funcionalidades import consulta_imc
 
 # importação dos submenus de cada função
 from interfaces.submenu import submenu_cad, submenu_est, submenu_consulta, submenu_listar, submenu_atv_inat, submenu_financ, submenu_exportar

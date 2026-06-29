@@ -1,5 +1,6 @@
 import datetime
 import mysql.connector
+
 from banco_dados import abrir_conexao
 from interfaces.funcontinuar import exibir_submenu
 
@@ -29,11 +30,12 @@ def export_vendas_geral():#==================================================VEN
         faturamento_total = cursor.fetchone()[0]
 
         hoje = datetime.datetime.now()
+        ano_atual = hoje.year
         mes_atual = hoje.month
         dia_atual = hoje.day
         hoje_formatado = hoje.strftime("%d/%m/%y")
-        faturamento_mensal = sum(venda[3] for venda in vendas if venda[0].month ==  mes_atual)
-        faturamento_diario = sum(venda[3] for venda in vendas if venda[0].day ==  dia_atual)
+        faturamento_mensal = sum(venda[3] for venda in vendas if venda[0].month ==  mes_atual and venda[0].year == ano_atual)
+        faturamento_diario = sum(venda[3] for venda in vendas if venda[0].day ==  dia_atual and venda[0].month == mes_atual and venda[0].year == ano_atual )
     except mysql.connector.Error as erro:
         print(f"\nArquivo: exportar - Linha: 38\nERRO: Falha no Banco de Dados, {erro}")
         input("Aperte ENTER para Continuar")
@@ -105,11 +107,12 @@ def export_vendas_qtde():#=================================================VENDA
         faturamento_total = cursor.fetchone()[0]
 
         hoje = datetime.datetime.now()
+        ano_atual = hoje.year
         mes_atual = hoje.month
         dia_atual = hoje.day
         hoje_formatado = hoje.strftime("%d/%m/%y")
-        faturamento_mensal = sum(venda[3] for venda in vendas if venda[0].month ==  mes_atual)
-        faturamento_diario = sum(venda[3] for venda in vendas if venda[0].day ==  dia_atual)
+        faturamento_mensal = sum(venda[3] for venda in vendas if venda[0].month ==  mes_atual and venda[0].year == ano_atual)
+        faturamento_diario = sum(venda[3] for venda in vendas if venda[0].day ==  dia_atual and venda[0].month == mes_atual and venda[0].year == ano_atual)
     except mysql.connector.Error as erro:
         print(f"\nArquivo: exportar - Linha: 113\nERRO: Falha no Banco de Dados, {erro}")
         input("Aperte ENTER para Continuar")

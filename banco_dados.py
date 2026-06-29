@@ -4,7 +4,7 @@ def abrir_conexao():
     conexao = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="soul_code",
+        password="soul_code$",
         database="bioritmo"
     )
     return conexao
@@ -78,7 +78,9 @@ def iniciar_db():
                 ("Aula Avulsa", "Serviços", 50, 1),
                 ("Água Proteica", "Bebidas", 12.99, 50),
                 ("Barrinha de Cereal", "Alimentos", 15.75, 40),
-                ("Lacinho para Cabelo", "Equipamentos", 3.50, 30)
+                ("Lacinho para Cabelo", "Equipamentos", 3.50, 30),
+                
+                ("Lipoaspiração", "Serviços", 200, 1)
             ]
 
             cursor.executemany("""
@@ -104,11 +106,11 @@ def iniciar_db():
         cursor.execute("SELECT COUNT(*) FROM aluno")
         if cursor.fetchone()[0] == 0: #verificar se não tem nem UMA linha na tabela aluno
             alunos_iniciais = [
-                ("Davi Hiluany", "davi.hiluany@gmail.com", 65.00, 1.65, 1, 1),
-                ("Gabriella Iglesias", "gabriella.iglesias@gmail.com", 65.00, 1.65, 1, 1),
-                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 65.00, 2.27, 1, 1),
-                ("João Pedro de França", "joao.defranca@gmail.com", 65.00, 1.65, 1, 1),
-                ("Lucas Imparato", "lucas.imparato@gmail.com", 65.00, 1.65, 1, 1),
+                ("Davi Hiluany", "davi.hiluany@gmail.com", 78.15, 1.75, 1, 1),
+                ("Gabriella Iglesias", "gabriella.iglesias@gmail.com", 67.00, 1.68, 1, 1),
+                ("Madu Zinevicius", "madu.zinevicius@gmail.com", 59.87, 1.65, 1, 1),
+                ("João Pedro de França", "joao.defranca@gmail.com", 69.67, 1.69, 1, 1),
+                ("Lucas Imparato", "lucas.imparato@gmail.com", 75.78, 1.71, 1, 1),
             ]
 
             cursor.executemany("""

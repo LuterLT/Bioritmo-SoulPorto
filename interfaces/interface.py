@@ -35,11 +35,17 @@ def exibir_users(): #=============================================EXIBIR USUÁRI
         """)
 
         resultado = cursor.fetchall()
+        larg_nome = max(len(aluno[1]) for aluno in resultado)
+        larg_email = max(len(aluno[2]) for aluno in resultado)
+        larg_plano = max(len(aluno[4]) for aluno in resultado)
+        larg_aulas = max(len(aluno[4]) for aluno in resultado)
+        print("\nAlunos:")
+        print(f"\n     ID  {'Nome':<{larg_nome + 2}}{'Email':<{larg_email + 10}}{'Plano':<{larg_plano + 10}}{'Aulas Disponiveis':<{larg_aulas + 13}}{'Peso':<14}{'Altura'}")
+        print("-" * 144)
         
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
-            print("\nAlunos:")
             for aluno in resultado:
                 larg_nome = max(len(aluno[1]) for aluno in resultado)
                 larg_email = max(len(aluno[2]) for aluno in resultado)
@@ -79,7 +85,10 @@ def exibir_prod(): #=============================================EXIBIR PRODUTOS
         if len(resultado) == 0:
             print("Nenhum resultado encontrado.")
         else:
+            larg_nome = max(len(plano[1]) for plano in resultado)
             print("\nProdutos / Serviços:")
+            print(f"\n     ID  {'Nome':<{larg_nome + 5}}{'Categoria':<25}{'Preço':<20}{'Quantidade'}")
+            print("-" * 100)
             for prodserv in resultado:
                 larg_nome = max(len(prodserv[1]) for prodserv in resultado)
                 larg_categ = max(len(prodserv[2]) for prodserv in resultado)
@@ -116,13 +125,14 @@ def exibir_planos(): #=============================================EXIBIR PLANOS
         if len(resultado) == 0:
             print("\nERRO: Nenhum Plano Cadastrado.")
         else:
+            larg_nome = max(len(plano[1]) for plano in resultado)
             print("\nPlanos:")
-            print(f"\n     ID  {'Nome':<20}{'Preço':<15}{'Aulas Permitidas'}")
-            print("-" * 75)
+            print(f"\n     ID  {'Nome':<{larg_nome + 4}}{'Preço':<20}{'Aulas Permitidas'}")
+            print("-" * 65)
 
             for plano in resultado:
                 larg_nome = max(len(plano[1]) for plano in resultado)
-                print(f" -> [{plano[0]}] {plano[1]:<{larg_nome}} | Preço: {plano[2]:<15} | Aulas permitidas: {plano[3]}")
+                print(f" -> [{plano[0]}] {plano[1]:<{larg_nome}} | Preço: {plano[2]:<10} | Aulas permitidas: {plano[3]}")
             print("\n")
 
     except mysql.connector.Error as erro:
@@ -158,7 +168,8 @@ def exibir_checkin(limite): #======================================EXIBIR CHECK-
             input("Aperte ENTER para Continuar")
         else:
             for checkin in resultado:
-               print(f"-> Data: {checkin[1]} | Aluno: {checkin[0]} | ID do Aluno: {checkin[2]}")
+               larg_nome = max(len(checkin[0]) for checkin in resultado)
+               print(f"-> Data: {checkin[1]} | Aluno: {checkin[0]:<{larg_nome}} | ID do Aluno: {checkin[2]}")
             input("Aperte ENTER para Continuar")
 
     except mysql.connector.Error as erro:

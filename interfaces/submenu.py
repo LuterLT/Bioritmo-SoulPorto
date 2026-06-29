@@ -1,10 +1,10 @@
-from comandos.consultas import consulta_geral, consulta_alunos, consulta_produtos, consulta_planos
-from comandos.cadastro import cad_aluno, cad_produtos, cad_planos
-from comandos.alterarCad import alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
-from comandos.estoque import repor_est, repor_est_lote, red_est
-from comandos.financeiro import exibir_nf, promocao_produto, promocao_plano, alt_preco_prodserv, alt_preco_plano, painel_bi
-from comandos.atv_inat import aluno_atv_inat, prodserv__atv_inat, plano_atv_inat
-from comandos.exportar import export_vendas_geral, export_vendas_qtde, export_chekin_geral, export_checkin_qtde
+from comandos.operacoes.consultas import consulta_geral, consulta_alunos, consulta_produtos, consulta_planos
+from comandos.gerenciamento.cadastro import cad_aluno, cad_produtos, cad_planos
+from comandos.gerenciamento.alterarCad import alt_cad_aluno, alt_cad_produtos, alt_cad_plano 
+from comandos.gerenciamento.estoque import repor_est, repor_est_lote, red_est
+from comandos.financas.financeiro import exibir_nf, promocao_produto, promocao_plano, alt_preco_prodserv, alt_preco_plano, painel_bi
+from comandos.gerenciamento.atv_inat import aluno_atv_inat, prodserv__atv_inat, plano_atv_inat
+from comandos.operacoes.exportar import export_vendas_geral, export_vendas_qtde, export_chekin_geral, export_checkin_qtde
 from interfaces.funcontinuar import exibir_submenu
 from interfaces.interface import exibir_users, exibir_prod, exibir_planos
 
@@ -65,6 +65,8 @@ def submenu_cad(): #===============================================EXIBE SUBMENU
                 elif subcomando == 3:
                     print("\n- Alterar Cadastro de Planos -\n")
                     alt_cad_plano()
+                else:
+                    print("ERRO: Opção inválida")
         else:
             print("ERRO: Operação Inválida")
             continue

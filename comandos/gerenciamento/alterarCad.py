@@ -1,11 +1,9 @@
 import mysql.connector
-import datetime
+
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_planos, exibir_users, exibir_prod
 from interfaces.funcontinuar import exibir_submenu
-from comandos.funcionalidades import validar_email
-
-
+from comandos.funcionalidade.funcionalidades import validar_email
 
 
 def alt_cad_aluno(): #===============================================ALTERA CADASTRO ALUNO===
@@ -19,6 +17,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
             break
         elif continuar == 0: #-> Se o usuário digitou o comando errado no submenu de continuidade
             continuar = exibir_submenu("'Alterar Cadastro de Alunos'")
+            continue
 
         exibir_users() #adicionei pra exibir aqui antes do input pra escolher qual
         
@@ -26,7 +25,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
             id_aluno = int(input("\nDigite o [ID] do Aluno que deseja Alterar: "))
         except ValueError:
             print("\n ERRO: O ID Deve Ser Preenchido Apenas com Números Inteiros")
-            continuar = exibir_submenu("'Alterar Cadastro de Alunos'")
+            continuar = 0
             continue
         
         try:
@@ -40,7 +39,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
             resultado = cursor.fetchone()
             if resultado is None:
                 print("\nERRO: O ID Digitado não é equivalente a nenhum cadastrado no Banco de Dados!")
-                continuar = exibir_submenu("'Alterar Cadastro de Alunos'")
+                continuar = 0
                 continue
             
             
@@ -54,19 +53,19 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
                 print(f"\nVocê Selecionou o aluno:\n-Nome: '{resultado[1]}'\n-Email: {resultado[2]} \n-Peso: {resultado[3]:.2f} Kg \n-Altura: {resultado[4]:2f} m")
                 print("\nPreencha os campos abaixo e APENAS aperte ENTER para aqueles que não deseja alterar")
                 
-                novo_nome= input("\nDigite o seu nome completo: ").strip() or resultado[1]
-                novo_email= input("Digite o seu email: ").strip() or resultado[2]
+                novo_nome= input("\nDigite o novo nome completo: ").strip() or resultado[1]
+                novo_email= input("Digite o novo email: ").strip() or resultado[2]
                 if not validar_email(novo_email):
                     print("\nERRO: Email Inválido")
-                    continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+                    continuar = 0
                     continue
 
                 novo_peso_str= input("Digite o seu peso (quilos): ").strip().replace(",", ".")
-                try: 
+                try:
                     novo_peso = float(novo_peso_str) if novo_peso_str else resultado[3]
                 except ValueError:
                     print("\nERRO: O Peso deve ter um número, alteração cancelada")
-                    continuar = exibir_submenu(f"de Alterar o Cadastro do Aluno '{resultado[1]}'")
+                    continuar = 0
                     continue
 
                 nova_altura_str= input("Digite a sua altura (metros): ").strip().replace(",", ".")
@@ -74,7 +73,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
                     nova_altura = float(nova_altura_str) if nova_altura_str else resultado[4]
                 except ValueError:
                     print("\nERRO: A Altura deve ser em número, alteração cancelada")
-                    continuar = exibir_submenu(f"de Alterar o Cadastro do Aluno '{resultado[1]}'")
+                    continuar = 0
                     continue
     
             
@@ -100,7 +99,7 @@ def alt_cad_aluno(): #===============================================ALTERA CADA
             if 'conexao' in locals() and conexao.is_connected():
                 cursor.close()
                 conexao.close()
-        continuar = exibir_submenu("'Alterar Cadastro de Alunos'")
+        continuar = 0
         continue
 
 
@@ -114,6 +113,8 @@ def alt_cad_produtos():
             break
         elif continuar == 0:
             continuar = exibir_submenu("'Alterar Cadastro de Produtos'")
+            continue
+
         try:
             print("Lista de produtos cadastrados:")
             exibir_prod()
@@ -121,7 +122,7 @@ def alt_cad_produtos():
 
         except ValueError:
             print("ERRO: O ID deve ser preenchido apenas com números inteiros")
-            continuar = exibir_submenu("'Alterar Cadastro de Produtos'")
+            continuar = 0
             continue
 
         try:
@@ -137,7 +138,7 @@ def alt_cad_produtos():
 
             if produto is None:
                 print("\nERRO: Produto não encontrado")
-                continuar = exibir_submenu("'Alterar Cadastro de Produtos'")
+                continuar = 0
                 continue
 
             while True:
@@ -146,19 +147,48 @@ def alt_cad_produtos():
                 elif continuar == 0:
                     continuar = exibir_submenu(f"de Alterar o Produto '{produto[1]}'")
                     continue
+
                 print("\nPreencha os campos abaixo e APENAS aperte ENTER para não alterar")
-                print(f"""
-    Você Selecionou o Produto:
-    -ID: {produto[0]}
-    -Nome: {produto[1]}
-    -Categoria: {produto[2]}
-    -Preço: R$ {produto[3]:.2f}
-    """)
-                
+                print(f"Você Selecionou o Produto:\n",
+                        f"-ID: {produto[0]}\n",
+                        f"-Nome: {produto[1]}\n",
+                        f"-Categoria: {produto[2]}\n",
+                        f"-Preço: R$ {produto[3]:.2f}\n")
+
                 # novo nome
                 novo_nome = input("Digite o novo nome: ").strip() or produto[1]
                 # nova categoria
-                nova_categoria = input("Digite a nova categoria: ").strip() or produto[2]
+                print(
+                    "\n1 - Serviços",
+                    "\n2 - Equipamentos",
+                    "\n3 - Alimentos",
+                    "\n4 - Bebidas",
+                    "\n5 - Suplementos",
+                    "\n6 - Cosméticos",
+                    "\n7 - Diversos"
+                )
+
+                nova_categoria_int = input("Digite a id da nova categoria: ").strip() or produto[2]
+
+                if nova_categoria_int == '1' or nova_categoria_int == "Serviços":
+                    nova_categoria = "Serviços"
+                elif nova_categoria_int == '2' or nova_categoria_int == "Equipamentos":
+                    nova_categoria = "Equipamentos"
+                elif nova_categoria_int == '3' or nova_categoria_int == "Alimentos":
+                    nova_categoria = "Alimentos"
+                elif nova_categoria_int == '4' or nova_categoria_int == "Bebidas":
+                    nova_categoria = "Bebidas"
+                elif nova_categoria_int == '5' or nova_categoria_int == "Suplementos":
+                    nova_categoria = "Suplementos"
+                elif nova_categoria_int == '6' or nova_categoria_int == "Cosméticos":
+                    nova_categoria = "Cosméticos"
+                elif nova_categoria_int == '7' or nova_categoria_int == "Diversos":
+                    nova_categoria = "Diversos"
+                else:
+                    print("Opção Inválida")
+                    continuar = 0
+                    continue
+
                 # novo preço
                 novo_preco_str = input("Digite o novo preço (R$): ").strip().replace(",", ".")
 
@@ -166,14 +196,14 @@ def alt_cad_produtos():
                     novo_preco = float(novo_preco_str) if novo_preco_str else produto[3]
 
                     if novo_preco < 0:
-                        print("\n ERRO: O preço não pode ser negativo")
-                        continuar = exibir_submenu(f"de Alterar o Produto '{produto[1]}'")
+                        print("\nERRO: O preço não pode ser negativo")
+                        continuar = 0
                         continue
                     
                 except ValueError:
 
                     print("\nERRO: O preço deve ser um número válido")
-                    continuar = exibir_submenu(f"de Alterar o Produto '{produto[1]}'")
+                    continuar = 0
                     continue
 
                 # UPDATE
@@ -206,7 +236,7 @@ def alt_cad_produtos():
             if 'conexao' in locals() and conexao.is_connected():
                 cursor.close()
                 conexao.close()
-        continuar = exibir_submenu("'Alterar Cadastro de Produtos'")
+        continuar = 0
         continue
 
 def alt_cad_plano(): #============================== ALTERA CADASTRO DE PLANOS ===========================
@@ -220,6 +250,7 @@ def alt_cad_plano(): #============================== ALTERA CADASTRO DE PLANOS =
             break
         elif continuar == 0:
             continuar = exibir_submenu("'Alterar Cadastro de Plano'")
+            continue
             
         try:
             print("\nPlanos cadastrados: ")
@@ -229,7 +260,7 @@ def alt_cad_plano(): #============================== ALTERA CADASTRO DE PLANOS =
         
         except ValueError:
             print("ERRO: O ID deve ser preenchido apenas com números inteiros")
-            continuar = exibir_submenu("'Alterar Cadastro de Plano'")
+            continuar = 0
             continue
 
         try:
@@ -246,7 +277,7 @@ def alt_cad_plano(): #============================== ALTERA CADASTRO DE PLANOS =
 
             if  plano_atual is None:
                 print("\nERRO: O ID Digitado não é equivalente a nenhum plano no Banco de Dados!")
-                continuar = exibir_submenu("'Alterar Cadastro de Plano'")
+                continuar = 0
                 continue
                 
 
@@ -255,15 +286,13 @@ def alt_cad_plano(): #============================== ALTERA CADASTRO DE PLANOS =
                 if continuar == 2:
                     break
                 elif continuar == 0:
-                    continuar = exibir_submenu(f"de Alterar o Plano '{plano_atual[1]}'")
+                    continuar = exibir_submenu("'Alterar Cadastro de Plano'")
                     continue
-                print(f"""
-Você Selecionou o Plano:
-\n-ID: {plano_atual[0]}
--Nome: {plano_atual[1]}
--Preço: R$ {plano_atual[2]:}
--Quantidade de aulas: {plano_atual[3]}
-""")
+                print(f"Você Selecionou o Plano:\n",
+                        f"-ID: {plano_atual[0]}\n",
+                        f"-Nome: {plano_atual[1]}\n",
+                        f"-Preço: R$ {plano_atual[2]:}\n",
+                        f"-Quantidade de aulas: {plano_atual[3]}")
                 print("\nPreencha os campos abaixo e caso não deseje alterar pressione ENTER")
                 
                 novo_nome_plano = input("Digite o novo nome do plano: ").strip() or plano_atual[1]
@@ -273,12 +302,12 @@ Você Selecionou o Plano:
                     novo_preco_plano = float(novo_preco_plano_str) if novo_preco_plano_str else plano_atual[2]
                 except ValueError:
                     print("\nERRO: Digite um preço válido")
-                    continuar = exibir_submenu(f"de Alterar o Plano '{plano_atual[1]}'")
+                    continuar = 0
                     continue
                     
                 if novo_preco_plano < 0:
                     print("\nERRO: O preço não pode ser negativo")
-                    continuar = exibir_submenu(f"de Alterar o Plano '{plano_atual[1]}'")
+                    continuar = 0
                     continue
 
                 nova_qtde_aulas_str = input("Digite a nova quantidade de aulas do plano: ").strip()
@@ -286,12 +315,12 @@ Você Selecionou o Plano:
                     nova_qtde_aulas = int(nova_qtde_aulas_str) if nova_qtde_aulas_str else plano_atual[3]
                 except ValueError:
                     print("\nERRO: Digite apenas números inteiros")
-                    continuar = exibir_submenu(f"de Alterar o Plano '{plano_atual[1]}'")
+                    continuar = 0
                     continue
 
                 if nova_qtde_aulas <= 0:
                     print("\nERRO: A quantidade de aulas não pode ser menor que 1")
-                    continuar = exibir_submenu(f"de Alterar o Plano '{plano_atual[1]}'")
+                    continuar = 0
                     continue
 
                 cursor.execute("""
@@ -323,5 +352,5 @@ Você Selecionou o Plano:
                 cursor.close()
                 conexao.close()
 
-        continuar = exibir_submenu("'Alterar Cadastro de Plano'")
+        continuar = 0
         continue

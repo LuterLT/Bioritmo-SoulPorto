@@ -4,6 +4,7 @@ from banco_dados import abrir_conexao
 from interfaces.interface import exibir_prod, exibir_planos
 from interfaces.funcontinuar import exibir_submenu
 
+
 def exibir_nf():
     try:
         conexao = abrir_conexao()
@@ -20,17 +21,13 @@ def exibir_nf():
             print("Nenhuma venda efetuada até o momento")
         else:
             for venda in historico:
-                print(f"""
-Venda: #{venda[0]}  
-Data e Horário: {venda[1]}
+                print(f"\nVenda: #{venda[0]}\n",
+                      f"Data e Horário: {venda[1]}\n",
+                      f"Produto Vendido: {venda[2]}\n",
+                      f"x {venda[3]} unidades\n"
+                      f" Valor Total da Venda: {venda[4]:.2f}\n",
+                      "--------------------------------------------")
 
-Produto Vendido: {venda[2]}
-                x {venda[3]} unidades
-
-Valor Total da Venda: {venda[4]:.2f}
-
---------------------------------------------
-""")
     except mysql.connector.Error as erro:
         print(f"ERRO: Falha no Banco de Dados, {erro}")
         input("Aperte ENTER para Continuar")

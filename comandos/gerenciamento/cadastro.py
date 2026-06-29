@@ -1,9 +1,10 @@
 import mysql.connector
 import datetime
+
 from banco_dados import abrir_conexao
 from interfaces.interface import exibir_planos
 from interfaces.funcontinuar import exibir_submenu
-from comandos.funcionalidades import validar_email
+from comandos.funcionalidade.funcionalidades import validar_email
 
 #cadastro de alunos, produtos e planos...
 
@@ -32,22 +33,22 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
             novo_peso = float(novo_peso_str) if novo_peso_str else 0.0
             if novo_peso > 700 or novo_peso < 0:
                 print("\nERRO: Peso Inválido")
-                continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+                continuar = 0
                 continue
         except ValueError:
             print("\nERRO: O Peso Deve ser Preenchido com números")
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continuar = 0
             continue
         try:  
             nova_altura_str = input("Digite a altura (m) do aluno (ou ENTER para deixar vazio): ").replace(",", ".") or ""
             nova_altura = float(nova_altura_str) if nova_altura_str else 0.0
             if nova_altura > 3.0 or nova_altura < 0:
                 print("\nERRO: Altura Inválida")
-                continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+                continuar = 0
                 continue
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continuar = 0
             continue
         try:
             print("\nPlanos Disponíves:")
@@ -55,7 +56,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
             novo_plano = int(input("\nQual plano deseja contratar? "))
         except ValueError:
             print("\nERRO: O ID deve ser preenchido apenas com números inteiros")
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continuar = 0
             continue
 
         conexao = abrir_conexao()
@@ -66,7 +67,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
         
         if not resultado:
             print("ERRO: O plano selecionado não existe")
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")       
+            continuar = 0
         else:
             try:
                 cursor.execute("SELECT qtde_aulas FROM planos WHERE id = %s", (novo_plano,))
@@ -100,7 +101,7 @@ def cad_aluno(): #==============================  CADASTRA ALUNOS ==============
                 if 'conexao' in locals() and conexao.is_connected():
                     cursor.close()
                     conexao.close()
-            continuar = exibir_submenu("'Cadastrar Novo Aluno'")
+            continuar = 0
 
 
 def cad_produtos():
@@ -113,6 +114,7 @@ def cad_produtos():
             break
         elif continuar == 0:
             continuar = exibir_submenu("'Cadastrar Novo Produto'")
+            continue
 
         # inputs para receber o nome e categoria do novo produto/serviço
         print(" ----- Cadastrar Produto ou Serviço ----- ")
@@ -128,32 +130,35 @@ def cad_produtos():
         )
         try:
             nova_categoria_int = int(input("\nQual categoria esse novo produto/serviço? "))
+
+            if nova_categoria_int == 1:
+                nova_categoria = "Serviços"
+            elif nova_categoria_int == 2:
+                nova_categoria = "Equipamentos"
+            elif nova_categoria_int == 3:
+                nova_categoria = "Alimentos"
+            elif nova_categoria_int == 4:
+                nova_categoria = "Bebidas"
+            elif nova_categoria_int == 5:
+                nova_categoria = "Suplementos"
+            elif nova_categoria_int == 6:
+                nova_categoria = "Cosméticos"
+            elif nova_categoria_int == 7:
+                nova_categoria = "Diversos"
+            else:
+                print("Opção Inválida")
+                continuar = 0
+                continue
+
         except ValueError:
             print("ERRO: Opção deve ser um número inteiro")
-            continuar = exibir_submenu("'Cadastrar Novo Produto'")
+            continuar = 0
             continue
 
-        if nova_categoria_int == 1:
-            nova_categoria = "Serviços"
-        elif nova_categoria_int == 2:
-            nova_categoria = "Equipamentos"
-        elif nova_categoria_int == 3:
-            nova_categoria = "Alimentos"
-        elif nova_categoria_int == 4:
-            nova_categoria = "Bebidas"
-        elif nova_categoria_int == 5:
-            nova_categoria = "Suplementos"
-        elif nova_categoria_int == 6:
-            nova_categoria = "Cosméticos"
-        elif nova_categoria_int == 7:
-            nova_categoria = "Diversos"
-        else:
-            print("Opção Inválida")
-
-
         # inputs para receber o preço e quantidade do novo produto/serviço
+        novo_preco = input("Qual o valor (R$) desse novo produto/serviço? ").strip().replace(",", ".")
         try:
-            novo_preco = float(input("Qual o valor (R$) desse novo produto/serviço? "))
+            novo_preco = float(novo_preco)
 
             if nova_categoria_int == 1:
                 nova_qtde = 1
@@ -162,7 +167,7 @@ def cad_produtos():
                 
         except ValueError:
             print("ERROR: Entrada Inválida, o preço deve ser um número!")
-            continuar = exibir_submenu("'Cadastrar Novo Produto / Serviço'")
+            continuar = 0
             continue
         
         try:
@@ -176,7 +181,7 @@ def cad_produtos():
 
             conexao.commit()
             print(f"\nProduto/Serviço {novo_nome} adicionado com sucesso!")
-            continuar = exibir_submenu("'Cadastrar Novo Produto / Serviço'")
+            continuar = 0
             continue
 
         except mysql.connector.Error as erro:
@@ -213,7 +218,7 @@ def cad_planos():
         except ValueError:
             print("\nERRO: Entrada inválida, o valor deve ser um número!")
             input("Aperte ENTER para continuar")
-            continuar = exibir_submenu("'Cadastrar Novo Plano'")
+            continuar = 0
             continue
 
         try:
@@ -221,7 +226,7 @@ def cad_planos():
         except ValueError:
             print("\nERRO: Entrada inválida, a qtde de aulas deve ser um número inteiro!")
             input("Aperte ENTER para continuar")
-            continuar = exibir_submenu("'Cadastrar Novo Plano'")
+            continuar = 0
             continue
 
         try:
@@ -235,7 +240,7 @@ def cad_planos():
 
             conexao.commit()
             print(f"\nPlano {novo_nome} adicionado com sucesso!")
-            continuar = exibir_submenu("'Cadastrar Novo Plano'")
+            continuar = 0
             continue
         
         except mysql.connector.Error as erro:
